@@ -339,7 +339,52 @@ if st.session_state.secilen_arac is None:
     with col_logo:
         if os.path.exists(LOGO_YOLU):
             st.image(LOGO_YOLU, use_container_width=True)
+# --- KURUMSAL TAKDİM / SUNUŞ KARTI ---
+st.markdown("""
+<div style="
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-left: 6px solid #C91D24;
+    border-radius: 14px;
+    padding: 26px 32px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+">
+    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 1.4rem; margin-right: 10px;">📋</span>
+        <h3 style="color: #0F172A; font-size: 1.35rem; font-weight: 800; margin: 0;">
+            SUNUŞ VE METODOLOJİK ÇERÇEVE
+        </h3>
+    </div>
+    
+    <p style="color: #334155; font-size: 1.05rem; line-height: 1.8; margin-bottom: 16px; text-align: justify;">
+        Bu rehber çalışma; <strong>Millî Eğitim Bakanlığı Din Öğretimi Genel Müdürlüğü Öğretim Programları ve Materyalleri Daire Başkanlığı</strong> 
+        bünyesinde yürütülen ders kitabı ve öğretim materyali yazım süreçlerinde görev alan komisyon üyelerine, 
+        ölçme ve değerlendirme araçlarının hazırlanması, yapılandırılması ve öğrenme çıktılarıyla tutarlı biçimde eşleştirilmesinde 
+        rehberlik etmek amacıyla <strong>Ölçme ve Değerlendirme Komisyonu</strong> tarafından hazırlanmıştır.
+    </p>
 
+    <div style="background-color: #F8FAFC; border-radius: 10px; padding: 18px 22px; border: 1px solid #E2E8F0;">
+        <h5 style="color: #0F172A; font-weight: 750; font-size: 1.05rem; margin-bottom: 10px;">
+            📌 Örnek Uygulamaların Kapsamı ve Hazırlanış İlkeleri:
+        </h5>
+        <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 0.98rem; line-height: 1.75;">
+            <li style="margin-bottom: 6px;">
+                <strong>Doğrudan Alıntılanan Örnekler:</strong> Rehberde yer alan örneklerin öncelikli bölümü, Bakanlığımızca onaylanarak okullarımızda okutulan 
+                mevcut ders kitaplarından doğrudan seçilmiş olup <em>materyalin özgünlüğünü ve bağlamını korumak adına üzerlerinde hiçbir pedagojik veya biçimsel değişiklik yapılmamıştır</em>.
+            </li>
+            <li>
+                <strong>Uzman Geliştirmesi Örnekler:</strong> Ders kitaplarında doğrudan örneği bulunmayan veya yeni program yaklaşımıyla geliştirilmesine ihtiyaç duyulan 
+                ölçme araçları için örnekler, <em>ölçme ve değerlendirme uzmanları tarafından alana özgü ilkeler doğrultusunda sıfırdan hazırlanmıştır</em>.
+            </li>
+        </ul>
+    </div>
+    
+    <div style="margin-top: 14px; font-size: 0.88rem; color: #64748B; font-style: italic; border-top: 1px dashed #CBD5E1; padding-top: 10px;">
+        * Bu rehber bağlayıcı bir mevzuat hükmü taşımamakta olup ders kitabı yazım komisyonlarının nitelikli, geçerli ve güvenilir ölçme-değerlendirme pratikleri geliştirmesini destekleyici bir referans kaynaktır.
+    </div>
+</div>
+""", unsafe_allow_html=True)
     kategoriler = [
         ("Ölçme ve Değerlendirme Araçları", "Ölçme ve Değerlendirme Araçları"),
         ("Puanlama Araçları", "Puanlama Araçları"),
