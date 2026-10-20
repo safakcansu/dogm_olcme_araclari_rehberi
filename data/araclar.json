@@ -1,0 +1,47 @@
+{
+  "acik_uclu": {
+    "ad": "Açık Uçlu Maddeler",
+    "kategori": "Süreç / Sonuç Odaklı",
+    "tanitim": "Öğrencilerin yanıtı kendilerinin yapılandırdığı; üst düzey düşünme, gerekçelendirme ve analiz becerilerini ölçmeye olanak tanıyan araçlardır.",
+    "dikkat_edilecekler": [
+      "Madde kökü açık, net ve yoruma kapalı şekilde tek bir amaca hizmet etmelidir.",
+      "Öğrencinin yanıt kapsamını belirleyici sınırlılıklar (kelime sayısı, basamak sayısı vb.) yönergede belirtilmelidir.",
+      "Madde yazılırken analitik veya bütüncül dereceli puanlama anahtarı eş zamanlı hazırlanmalıdır."
+    ],
+    "ogrenme_ciktilari": [
+      "Bilgiyi transfer etme ve yeni durumlara uygulama",
+      "Akıl yürütme, gerekçelendirme ve argüman kurma süreç bileşenleri",
+      "Eleştirel düşünme ve problem çözme becerileri"
+    ],
+    "ornekler": [
+      {
+        "baslik": "Örnek 1: Süreç Bileşeni Odaklı Senaryolu Madde",
+        "gorsel_yolu": "assets/images/ornek1.png",
+        "ogrenme_ciktisi": "KB2.14. Yorumlama (Verilen senaryodaki argümanları çözümleyerek gerekçeli çıkarım yapar.)",
+        "aciklama": "Öğrenciden metindeki çelişkiyi bulup kendi gerekçesiyle ifade etmesi ve çözüme yönelik argüman sunması beklenmektedir."
+      }
+    ]
+  },
+  "rubrik": {
+    "ad": "Dereceli Puanlama Anahtarı (Rubrik)",
+    "kategori": "Süreç Odaklı",
+    "tanitim": "Öğrenci performansının belirli ölçütler ve düzeyler doğrultusunda objektif ve güvenilir biçimde değerlendirilmesini sağlayan puanlama aracıdır.",
+    "dikkat_edilecekler": [
+      "Ölçütler (kriterler) birbiriyle örtüşmemeli ve doğrudan öğrenme çıktısını yansıtmalıdır.",
+      "Düzey tanımlayıcıları gözlenebilir ve ölçülebilir ifadeler içermelidir.",
+      "Düzey sayısı ölçümün amacına göre (genellikle 3-5 düzey) optimize edilmelidir."
+    ],
+    "ogrenme_ciktilari": [
+      "Karmaşık performans ve ürün geliştirme süreçleri",
+      "Öz düzenleme ve öz değerlendirme becerileri"
+    ],
+    "ornekler": [
+      {
+        "baslik": "Örnek 1: Analitik Dereceli Puanlama Anahtarı",
+        "gorsel_yolu": "assets/images/rubrik_ornek.png",
+        "ogrenme_ciktisi": "SB3.1. Problem Çözme Süreç Bileşenleri",
+        "aciklama": "Veriyi anlama, strateji geliştirme ve sonucu doğrulama basamaklarına göre puanlama düzeyleri ayrılmıştır."
+      }
+    ]
+  }
+}
