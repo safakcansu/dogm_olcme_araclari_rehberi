@@ -68,6 +68,7 @@ section[data-testid="stSidebar"] button:hover {
     border-color: #0891B2 !important;
     color: #FFFFFF !important;
 }
+
 /* Kurumsal Banner */
 .tymm-header-banner {
     background: linear-gradient(135deg, #0F172A 0%, #164E63 100%);
@@ -103,37 +104,61 @@ section[data-testid="stSidebar"] button:hover {
     padding-left: 12px;
 }
 
-/* Buton Kartları */
-div[data-testid="column"] button {
-    background-color: rgba(255, 255, 255, 0.90) !important;
-    color: #0F172A !important;
+/* Expander (Açılır-Kapanır Başlık) Stili */
+div[data-testid="stExpander"] {
+    background-color: rgba(255, 255, 255, 0.94) !important;
     border: 1px solid #E2E8F0 !important;
+    border-left: 6px solid #0891B2 !important;
+    border-radius: 14px !important;
+    margin-bottom: 24px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+    backdrop-filter: blur(8px) !important;
+}
+div[data-testid="stExpander"] details summary span p {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
+}
+
+/* Araç Butonları (Grid Kartları - Normal Durum) */
+div[data-testid="column"] button {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #0F172A !important;
+    border: 1px solid #CBD5E1 !important;
     border-radius: 12px !important;
     padding: 14px 18px !important;
     font-weight: 650 !important;
     font-size: 0.98rem !important;
     text-align: left !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
     backdrop-filter: blur(6px) !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
-div[data-testid="column"] button:hover {
-    border-color: #0891B2 !important;
-    color: #0891B2 !important;
-    background-color: #FFFFFF !important;
-    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.15) !important;
-    transform: translateY(-2px) !important;
+div[data-testid="column"] button p {
+    color: #0F172A !important;
 }
 
-/* Sekmeler */
+/* Araç Butonları - Üzerine Gelince (Hover) */
+div[data-testid="column"] button:hover {
+    border-color: #0891B2 !important;
+    background-color: #0891B2 !important;
+    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+div[data-testid="column"] button:hover p,
+div[data-testid="column"] button:hover span {
+    color: #FFFFFF !important;
+}
+
+/* Sekmeler (Tabs - Normal Durum) */
 div[data-testid="stTabs"] {
     gap: 10px !important;
     margin-top: 15px !important;
     margin-bottom: 25px !important;
 }
 div[data-testid="stTabs"] button {
-    background-color: rgba(255, 255, 255, 0.85) !important;
-    border: 1px solid #E2E8F0 !important;
+    background-color: rgba(255, 255, 255, 0.90) !important;
+    border: 1px solid #CBD5E1 !important;
     border-radius: 10px !important;
     padding: 14px 22px !important;
     backdrop-filter: blur(6px) !important;
@@ -143,15 +168,25 @@ div[data-testid="stTabs"] button p,
 div[data-testid="stTabs"] button strong {
     font-size: 1.1rem !important;
     font-weight: 700 !important;
-    color: #475569 !important;
+    color: #334155 !important;
 }
+
+/* Sekmeler - Üzerine Gelince (Hover) */
 div[data-testid="stTabs"] button:hover {
-    border-color: #0891B2 !important;
+    background-color: #0E7490 !important;
+    border-color: #0E7490 !important;
 }
+div[data-testid="stTabs"] button:hover p,
+div[data-testid="stTabs"] button:hover strong,
+div[data-testid="stTabs"] button:hover span {
+    color: #FFFFFF !important;
+}
+
+/* Sekmeler - Seçili Durum */
 div[data-testid="stTabs"] button[aria-selected="true"] {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
-    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.35) !important;
 }
 div[data-testid="stTabs"] button[aria-selected="true"] p,
 div[data-testid="stTabs"] button[aria-selected="true"] strong {
@@ -160,7 +195,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] strong {
 
 /* Kartlar */
 .tymm-card {
-    background-color: rgba(255, 255, 255, 0.92);
+    background-color: rgba(255, 255, 255, 0.94);
     border: 1px solid #E2E8F0;
     border-radius: 14px;
     padding: 26px 30px;
@@ -224,7 +259,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] strong {
 }
 
 .tymm-cikti-box {
-    background-color: rgba(255, 255, 255, 0.92);
+    background-color: rgba(255, 255, 255, 0.94);
     border: 1px solid #E2E8F0;
     border-top: 4px solid #EA580C;
     border-radius: 14px;
@@ -347,7 +382,7 @@ with st.sidebar:
     )
     yeni_mod = "araclar" if "Ölçme" in mod_secim else "beceriler"
     if yeni_mod != st.session_state.aktif_gorunum:
-        st.session_state.aktif_gorunum = yene_mod = yeni_mod
+        st.session_state.aktif_gorunum = yeni_mod
         st.session_state.secilen_arac = None
         st.rerun()
 
@@ -380,33 +415,30 @@ if st.session_state.secilen_arac is None:
         if os.path.exists(LOGO_YOLU):
             st.image(LOGO_YOLU, use_container_width=True)
 
-    # KURUMSAL TAKDİM / SUNUŞ KARTI (HTML Olarak Derlenmiş Hali)
-    takdim_html = """
-    <div style="background-color: rgba(255, 255, 255, 0.92); border: 1px solid #E2E8F0; border-left: 6px solid #0891B2; border-radius: 14px; padding: 26px 32px; margin-bottom: 28px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); backdrop-filter: blur(8px);">
-        <div style="display: flex; align-items: center; margin-bottom: 14px;">
-            <span style="font-size: 1.4rem; margin-right: 10px;">📋</span>
-            <h3 style="color: #0F172A; font-size: 1.35rem; font-weight: 800; margin: 0;">SUNUŞ VE METODOLOJİK ÇERÇEVE</h3>
+    # KURUMSAL TAKDİM (Açılır-Kapanır Ok Başlığı / Expander)
+    with st.expander("📋 SUNUŞ VE METODOLOJİK ÇERÇEVE", expanded=False):
+        takdim_icerik = """
+        <div style="padding: 10px 6px;">
+            <p style="color: #334155; font-size: 1.05rem; line-height: 1.8; margin-bottom: 16px; text-align: justify;">
+                Bu rehber çalışma; <strong>Millî Eğitim Bakanlığı Din Öğretimi Genel Müdürlüğü Öğretim Programları ve Materyalleri Daire Başkanlığı</strong> bünyesinde yürütülen ders kitabı ve öğretim materyali yazım süreçlerinde görev alan komisyon üyelerine, ölçme ve değerlendirme araçlarının hazırlanması, yapılandırılması ve öğrenme çıktılarıyla tutarlı biçimde eşleştirilmesinde rehberlik etmek amacıyla <strong>Ölçme ve Değerlendirme Komisyonu</strong> tarafından hazırlanmıştır.
+            </p>
+            <div style="background-color: rgba(248, 250, 252, 0.85); border-radius: 10px; padding: 18px 22px; border: 1px solid #E2E8F0;">
+                <h5 style="color: #0F172A; font-weight: 750; font-size: 1.05rem; margin-bottom: 10px;">📌 Örnek Uygulamaların Kapsamı ve Hazırlanış İlkeleri:</h5>
+                <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 0.98rem; line-height: 1.75;">
+                    <li style="margin-bottom: 6px;">
+                        <strong>Doğrudan Alıntılanan Örnekler:</strong> Rehberde yer alan örneklerin öncelikli bölümü, Bakanlığımızca onaylanarak okullarımızda okutulan mevcut ders kitaplarından doğrudan seçilmiş olup <em>materyalin özgünlüğünü ve bağlamını korumak adına üzerlerinde hiçbir pedagojik veya biçimsel değişiklik yapılmamıştır</em>.
+                    </li>
+                    <li>
+                        <strong>Uzman Geliştirmesi Örnekler:</strong> Ders kitaplarında doğrudan örneği bulunmayan veya yeni program yaklaşımıyla geliştirilmesine ihtiyaç duyulan ölçme araçları için örnekler, <em>ölçme ve değerlendirme uzmanları tarafından alana özgü ilkeler doğrultusunda sıfırdan hazırlanmıştır</em>.
+                    </li>
+                </ul>
+            </div>
+            <div style="margin-top: 14px; font-size: 0.88rem; color: #64748B; font-style: italic; border-top: 1px dashed #CBD5E1; padding-top: 10px;">
+                - Bu rehber bağlayıcı bir mevzuat hükmü taşımamakta olup ders kitabı yazım komisyonlarının nitelikli, geçerli ve güvenilir ölçme-değerlendirme pratikleri geliştirmesini destekleyici bir referans kaynaktır.
+            </div>
         </div>
-        <p style="color: #334155; font-size: 1.05rem; line-height: 1.8; margin-bottom: 16px; text-align: justify;">
-            Bu rehber çalışma; <strong>Millî Eğitim Bakanlığı Din Öğretimi Genel Müdürlüğü Öğretim Programları ve Materyalleri Daire Başkanlığı</strong> bünyesinde yürütülen ders kitabı ve öğretim materyali yazım süreçlerinde görev alan komisyon üyelerine, ölçme ve değerlendirme araçlarının hazırlanması, yapılandırılması ve öğrenme çıktılarıyla tutarlı biçimde eşleştirilmesinde rehberlik etmek amacıyla <strong>Ölçme ve Değerlendirme Komisyonu</strong> tarafından hazırlanmıştır.
-        </p>
-        <div style="background-color: rgba(248, 250, 252, 0.85); border-radius: 10px; padding: 18px 22px; border: 1px solid #E2E8F0;">
-            <h5 style="color: #0F172A; font-weight: 750; font-size: 1.05rem; margin-bottom: 10px;">📌 Örnek Uygulamaların Kapsamı ve Hazırlanış İlkeleri:</h5>
-            <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 0.98rem; line-height: 1.75;">
-                <li style="margin-bottom: 6px;">
-                    <strong>Doğrudan Alıntılanan Örnekler:</strong> Rehberde yer alan örneklerin öncelikli bölümü, Bakanlığımızca onaylanarak okullarımızda okutulan mevcut ders kitaplarından doğrudan seçilmiş olup <em>materyalin özgünlüğünü ve bağlamını korumak adına üzerlerinde hiçbir pedagojik veya biçimsel değişiklik yapılmamıştır</em>.
-                </li>
-                <li>
-                    <strong>Uzman Geliştirmesi Örnekler:</strong> Ders kitaplarında doğrudan örneği bulunmayan veya yeni program yaklaşımıyla geliştirilmesine ihtiyaç duyulan ölçme araçları için örnekler, <em>ölçme ve değerlendirme uzmanları tarafından alana özgü ilkeler doğrultusunda sıfırdan hazırlanmıştır</em>.
-                </li>
-            </ul>
-        </div>
-        <div style="margin-top: 14px; font-size: 0.88rem; color: #64748B; font-style: italic; border-top: 1px dashed #CBD5E1; padding-top: 10px;">
-            - Bu rehber bağlayıcı bir mevzuat hükmü taşımamakta olup ders kitabı yazım komisyonlarının nitelikli, geçerli ve güvenilir ölçme-değerlendirme pratikleri geliştirmesini destekleyici bir referans kaynaktır.
-        </div>
-    </div>
-    """
-    st.markdown(takdim_html, unsafe_allow_html=True)
+        """
+        st.markdown(takdim_icerik, unsafe_allow_html=True)
 
     # 1.A) BECERİDEN ARACA ULAŞMA MODU
     if st.session_state.aktif_gorunum == "beceriler":
