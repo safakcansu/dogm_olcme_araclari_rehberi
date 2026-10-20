@@ -68,9 +68,6 @@ section[data-testid="stSidebar"] button:hover {
     border-color: #0891B2 !important;
     color: #FFFFFF !important;
 }
-/* Sağ üstteki ayarlar ve tema değiştirici seçenekleri gizle */
-#MainMenu {visibility: hidden !important;}
-button[title="View app settings"] {display: none !important;}
 /* Kurumsal Banner */
 .tymm-header-banner {
     background: linear-gradient(135deg, #0F172A 0%, #164E63 100%);
