@@ -259,33 +259,39 @@ def surec_bilesenlerini_bicimlendir(metin):
     
     metin = str(metin).strip()
     
-    # *a), a), *b), b), *1), 1) gibi süreç belirteçlerini yakala
-    pattern = r'(?=(\*?[a-zA-Z0-9]\)))'
-    parcalar = re.split(pattern, metin)
-    
-    if len(parcalar) <= 1:
+    # Yıldız (*) karakteri yoksa düz metin olarak ver
+    if "*" not in metin:
         return f"<p style='margin:0; font-size:1.1rem; line-height:1.7; color:#1e293b;'>{metin}</p>"
     
-    ana_cikti = parcalar[0].strip()
-    html_cikti = f"<div style='font-size: 1.15rem; font-weight: 750; margin-bottom: 12px; color: #1e293b; line-height: 1.6;'>{ana_cikti}</div>"
-    html_cikti += "<ul style='margin: 0; padding-left: 10px; list-style-type: none;'>"
+    # Metni doğrudan yıldız (*) işaretinden böl
+    parcalar = [p.strip() for p in metin.split("*") if p.strip()]
     
-    i = 1
-    while i < len(parcalar):
-        madde_isareti = parcalar[i].strip()
-        madde_metni = parcalar[i+1].strip() if i+1 < len(parcalar) else ""
-        tam_madde = f"{madde_isareti} {madde_metni}".strip().lstrip("*").strip()
-        
-        # Parantez içi harf veya rakamı kalın yap
-        kapanis = tam_madde.find(")")
+    # İlk parça ana çıktıdır: "HDS.10.1.1. Hadis ilminin konusunu ve önemini çözümleyebilme"
+    ana_cikti = parcalar[0]
+    html_cikti = f"<div style='font-size: 1.15rem; font-weight: 750; margin-bottom: 14px; color: #1e293b; line-height: 1.6;'>{ana_cikti}</div>"
+    html_cikti += "<ul style='margin: 0; padding-left: 5px; list-style-type: none;'>"
+    
+    # Geriye kalan parçalar süreç bileşenleridir: "a) Hadis ilminin...", "b) ..."
+    for madde in parcalar[1:]:
+        # Parantezin kapandığı yeri bul (a), b), 1) vb.)
+        kapanis = madde.find(")")
         if kapanis != -1:
-            etiket = tam_madde[:kapanis+1]
-            icerik = tam_madde[kapanis+1:].strip()
-            html_cikti += f"<li style='margin-bottom: 10px; color: #334155; font-size: 1.05rem; line-height: 1.6; display: flex; align-items: flex-start;'><span style='margin-right: 8px; color: #ea580c; font-weight: 800;'>🔹</span><span><strong style='color: #9a3412;'>{etiket}</strong> {icerik}</span></li>"
+            etiket = madde[:kapanis+1].strip()      # "a)"
+            icerik = madde[kapanis+1:].strip()      # "Hadis ilminin konusu..."
+            html_cikti += f"""
+            <li style='margin-bottom: 10px; color: #334155; font-size: 1.05rem; line-height: 1.6; display: flex; align-items: flex-start;'>
+                <span style='margin-right: 8px; color: #ea580c; font-weight: 800;'>🔹</span>
+                <span><strong style='color: #9a3412;'>{etiket}</strong> {icerik}</span>
+            </li>
+            """
         else:
-            html_cikti += f"<li style='margin-bottom: 10px; color: #334155; font-size: 1.05rem; line-height: 1.6;'>🔹 {tam_madde}</li>"
-        i += 2
-        
+            html_cikti += f"""
+            <li style='margin-bottom: 10px; color: #334155; font-size: 1.05rem; line-height: 1.6; display: flex; align-items: flex-start;'>
+                <span style='margin-right: 8px; color: #ea580c; font-weight: 800;'>🔹</span>
+                <span>{madde}</span>
+            </li>
+            """
+            
     html_cikti += "</ul>"
     return html_cikti
 
