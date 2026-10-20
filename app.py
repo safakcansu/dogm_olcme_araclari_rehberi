@@ -202,32 +202,39 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
         color: #FFFFFF !important;
     }
 
-    /* Sekmeler Normal: Koyu Zemin, Beyaz Yazı */
+    /* Sekmeler Normal: Açık moddaki gibi SİYAH YAZI */
     div[data-testid="stTabs"] [data-baseweb="tab"] {
-        background-color: #0F172A !important;
-        border: 1px solid #334155 !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     div[data-testid="stTabs"] [data-baseweb="tab"] * {
-        color: #FFFFFF !important;
+        color: #0F172A !important;
+        font-weight: 700 !important;
     }
 
-    /* Sekmeler Hover: Canlı Turkuaz Mavi Zemin, Bembeyaz Yazı */
+    /* Sekmeler Hover: Koyu Siyah Vurgusu */
     div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
-        background-color: #0891B2 !important;
-        border-color: #0891B2 !important;
+        background-color: transparent !important;
+        border: none !important;
     }
     div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
-        color: #FFFFFF !important;
+        color: #C91D24 !important;
     }
 
-    /* Sekmeler Seçili */
+    /* Sekmeler Seçili (Aktif): Kırmızı Vurgulu Yazı */
     div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
-        background-color: #0891B2 !important;
-        border-color: #0891B2 !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
-        color: #FFFFFF !important;
+        color: #C91D24 !important;
+        font-weight: 800 !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
+        background-color: #C91D24 !important;
+        display: block !important;
     }
 }
 
