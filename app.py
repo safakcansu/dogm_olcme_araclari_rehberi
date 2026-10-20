@@ -361,6 +361,7 @@ if st.session_state.secilen_arac is None:
             st.image(LOGO_YOLU, use_container_width=True)
 
     # KURUMSAL TAKDİM / SUNUŞ KARTI
+   # KURUMSAL TAKDİM / SUNUŞ KARTI
     st.markdown("""
     <div style="
         background-color: #FFFFFF;
@@ -371,7 +372,7 @@ if st.session_state.secilen_arac is None:
         margin-bottom: 28px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
     ">
-        <div style="display: flex; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; margin-bottom: 14px;">
             <span style="font-size: 1.4rem; margin-right: 10px;">📋</span>
             <h3 style="color: #0F172A; font-size: 1.35rem; font-weight: 800; margin: 0;">
                 SUNUŞ VE METODOLOJİK ÇERÇEVE
@@ -400,9 +401,9 @@ if st.session_state.secilen_arac is None:
                 </li>
             </ul>
         </div>
-        
+
         <div style="margin-top: 14px; font-size: 0.88rem; color: #64748B; font-style: italic; border-top: 1px dashed #CBD5E1; padding-top: 10px;">
-            * Bu rehber bağlayıcı bir mevzuat hükmü taşımamakta olup ders kitabı yazım komisyonlarının nitelikli, geçerli ve güvenilir ölçme-değerlendirme pratikleri geliştirmesini destekleyici bir referans kaynaktır.
+            - Bu rehber bağlayıcı bir mevzuat hükmü taşımamakta olup ders kitabı yazım komisyonlarının nitelikli, geçerli ve güvenilir ölçme-değerlendirme pratikleri geliştirmesini destekleyici bir referans kaynaktır.
         </div>
     </div>
     """, unsafe_allow_html=True)
