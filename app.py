@@ -14,20 +14,37 @@ st.set_page_config(
 
 # 2. Dosya Yolları
 GORSEL_KLASORU = os.path.join("assets", "images")
+FON_GORSELI_PNG = os.path.join(GORSEL_KLASORU, "webfon.png")
+FON_GORSELI_JPG = os.path.join(GORSEL_KLASORU, "webfon.jpg")
 EXCEL_YOLU = os.path.join("data", "araclar.xlsx")
 LOGO_YOLU = os.path.join(GORSEL_KLASORU, "DOGM_Logo_Yan_.png")
 
-# 3. Maarif Modeli Özel CSS Teması
+# Arka Plan Görselini Belirleme ve Base64 Formatına Çevirme
+fon_yolu = FON_GORSELI_PNG if os.path.exists(FON_GORSELI_PNG) else FON_GORSELI_JPG
+
+def arka_plan_css_olustur(gorsel_yolu):
+    if os.path.exists(gorsel_yolu):
+        ext = "jpeg" if gorsel_yolu.endswith((".jpg", ".jpeg")) else "png"
+        with open(gorsel_yolu, "rb") as f:
+            encoded_string = base64.b64encode(f.read()).decode()
+        return f"""
+        <style>
+        .stApp {{
+            background-image: linear-gradient(rgba(240, 244, 248, 0.88), rgba(240, 244, 248, 0.88)), url("data:image/{ext};base64,{encoded_string}");
+            background-size: cover;
+            background-position: center right;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """
+    return ""
+
+st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
+
+# 3. Webfon Uyumlu Kurumsal CSS Teması
 TYMM_CSS = """
 <style>
-/* Genel Gövde */
-.stApp {
-    background-color: #F8FAFC !important;
-    background-image: none !important;
-    color: #1E293B !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-}
-
 /* Sol Kenar Çubuğu */
 section[data-testid="stSidebar"] {
     background-color: #0F172A !important;
@@ -47,20 +64,20 @@ section[data-testid="stSidebar"] button {
     transition: all 0.2s ease !important;
 }
 section[data-testid="stSidebar"] button:hover {
-    background-color: #C91D24 !important;
-    border-color: #C91D24 !important;
+    background-color: #0891B2 !important;
+    border-color: #0891B2 !important;
     color: #FFFFFF !important;
 }
 
 /* Kurumsal Banner */
 .tymm-header-banner {
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    background: linear-gradient(135deg, #0F172A 0%, #164E63 100%);
     border-radius: 16px;
     padding: 28px 36px;
     color: #FFFFFF;
     margin-bottom: 24px;
     box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
-    border-bottom: 4px solid #C91D24;
+    border-bottom: 4px solid #0891B2;
 }
 .tymm-header-banner h1 {
     color: #FFFFFF !important;
@@ -69,7 +86,7 @@ section[data-testid="stSidebar"] button:hover {
     margin-bottom: 8px !important;
 }
 .tymm-header-banner p {
-    color: #94A3B8 !important;
+    color: #BAE6FD !important;
     font-size: 1.05rem !important;
     margin-bottom: 0 !important;
 }
@@ -83,13 +100,13 @@ section[data-testid="stSidebar"] button:hover {
     margin-bottom: 14px;
     display: flex;
     align-items: center;
-    border-left: 5px solid #C91D24;
+    border-left: 5px solid #0891B2;
     padding-left: 12px;
 }
 
 /* Buton Kartları */
 div[data-testid="column"] button {
-    background-color: #FFFFFF !important;
+    background-color: rgba(255, 255, 255, 0.90) !important;
     color: #0F172A !important;
     border: 1px solid #E2E8F0 !important;
     border-radius: 12px !important;
@@ -97,14 +114,15 @@ div[data-testid="column"] button {
     font-weight: 650 !important;
     font-size: 0.98rem !important;
     text-align: left !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03) !important;
+    backdrop-filter: blur(6px) !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 div[data-testid="column"] button:hover {
-    border-color: #C91D24 !important;
-    color: #C91D24 !important;
+    border-color: #0891B2 !important;
+    color: #0891B2 !important;
     background-color: #FFFFFF !important;
-    box-shadow: 0 6px 16px rgba(201, 29, 36, 0.12) !important;
+    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.15) !important;
     transform: translateY(-2px) !important;
 }
 
@@ -115,10 +133,11 @@ div[data-testid="stTabs"] {
     margin-bottom: 25px !important;
 }
 div[data-testid="stTabs"] button {
-    background-color: #FFFFFF !important;
+    background-color: rgba(255, 255, 255, 0.85) !important;
     border: 1px solid #E2E8F0 !important;
     border-radius: 10px !important;
     padding: 14px 22px !important;
+    backdrop-filter: blur(6px) !important;
     transition: all 0.2s ease !important;
 }
 div[data-testid="stTabs"] button p,
@@ -128,12 +147,12 @@ div[data-testid="stTabs"] button strong {
     color: #475569 !important;
 }
 div[data-testid="stTabs"] button:hover {
-    border-color: #94A3B8 !important;
+    border-color: #0891B2 !important;
 }
 div[data-testid="stTabs"] button[aria-selected="true"] {
-    background-color: #0F172A !important;
-    border-color: #0F172A !important;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2) !important;
+    background-color: #0891B2 !important;
+    border-color: #0891B2 !important;
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25) !important;
 }
 div[data-testid="stTabs"] button[aria-selected="true"] p,
 div[data-testid="stTabs"] button[aria-selected="true"] strong {
@@ -142,12 +161,13 @@ div[data-testid="stTabs"] button[aria-selected="true"] strong {
 
 /* Kartlar */
 .tymm-card {
-    background-color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.92);
     border: 1px solid #E2E8F0;
     border-radius: 14px;
     padding: 26px 30px;
     margin-top: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(8px);
 }
 .tymm-card-title {
     color: #0F172A;
@@ -162,7 +182,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] strong {
     display: inline-block;
     width: 4px;
     height: 18px;
-    background-color: #C91D24;
+    background-color: #0891B2;
     margin-right: 10px;
     border-radius: 2px;
 }
@@ -183,12 +203,12 @@ div[data-testid="stTabs"] button[aria-selected="true"] strong {
 }
 
 .tymm-badge-item {
-    background-color: #F8FAFC;
-    border: 1px solid #E2E8F0;
+    background-color: #F0FDFA;
+    border: 1px solid #CCFBF1;
     padding: 12px 18px;
     border-radius: 10px;
     margin-bottom: 10px;
-    color: #0F172A;
+    color: #0F766E;
     font-size: 1.02rem;
     font-weight: 600;
     display: flex;
@@ -196,7 +216,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] strong {
 }
 
 .tymm-img-container {
-    background-color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.95);
     border: 1px solid #E2E8F0;
     border-radius: 14px;
     padding: 18px;
@@ -205,15 +225,16 @@ div[data-testid="stTabs"] button[aria-selected="true"] strong {
 }
 
 .tymm-cikti-box {
-    background-color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.92);
     border: 1px solid #E2E8F0;
-    border-top: 4px solid #C91D24;
+    border-top: 4px solid #EA580C;
     border-radius: 14px;
     padding: 24px 26px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(8px);
 }
 .tymm-cikti-box h5 {
-    color: #0F172A;
+    color: #9A3412;
     margin-bottom: 14px;
     font-size: 1.15rem;
     font-weight: 800;
@@ -243,14 +264,14 @@ def surec_bilesenlerini_bicimlendir(metin):
             icerik = madde[kapanis+1:].strip()
             html_cikti += f"""
             <li style='margin-bottom: 10px; color: #334155; font-size: 1rem; line-height: 1.6; display: flex; align-items: flex-start;'>
-                <span style='margin-right: 8px; color: #C91D24; font-weight: 800;'>▪</span>
+                <span style='margin-right: 8px; color: #EA580C; font-weight: 800;'>▪</span>
                 <span><strong style='color: #0F172A;'>{etiket}</strong> {icerik}</span>
             </li>
             """
         else:
             html_cikti += f"""
             <li style='margin-bottom: 10px; color: #334155; font-size: 1rem; line-height: 1.6; display: flex; align-items: flex-start;'>
-                <span style='margin-right: 8px; color: #C91D24; font-weight: 800;'>▪</span>
+                <span style='margin-right: 8px; color: #EA580C; font-weight: 800;'>▪</span>
                 <span>{madde}</span>
             </li>
             """
@@ -327,7 +348,7 @@ with st.sidebar:
     )
     yeni_mod = "araclar" if "Ölçme" in mod_secim else "beceriler"
     if yeni_mod != st.session_state.aktif_gorunum:
-        st.session_state.aktif_gorunum = yeni_mod
+        st.session_state.aktif_gorunum = yene_mod = yeni_mod
         st.session_state.secilen_arac = None
         st.rerun()
 
@@ -360,11 +381,9 @@ if st.session_state.secilen_arac is None:
         if os.path.exists(LOGO_YOLU):
             st.image(LOGO_YOLU, use_container_width=True)
 
-    # KURUMSAL TAKDİM / SUNUŞ KARTI
-   # KURUMSAL TAKDİM / SUNUŞ KARTI
-   # KURUMSAL TAKDİM / SUNUŞ KARTI (HTML Olarak Derlenmiş Hali)
+    # KURUMSAL TAKDİM / SUNUŞ KARTI (HTML Olarak Derlenmiş Hali)
     takdim_html = """
-    <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-left: 6px solid #C91D24; border-radius: 14px; padding: 26px 32px; margin-bottom: 28px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);">
+    <div style="background-color: rgba(255, 255, 255, 0.92); border: 1px solid #E2E8F0; border-left: 6px solid #0891B2; border-radius: 14px; padding: 26px 32px; margin-bottom: 28px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); backdrop-filter: blur(8px);">
         <div style="display: flex; align-items: center; margin-bottom: 14px;">
             <span style="font-size: 1.4rem; margin-right: 10px;">📋</span>
             <h3 style="color: #0F172A; font-size: 1.35rem; font-weight: 800; margin: 0;">SUNUŞ VE METODOLOJİK ÇERÇEVE</h3>
@@ -372,7 +391,7 @@ if st.session_state.secilen_arac is None:
         <p style="color: #334155; font-size: 1.05rem; line-height: 1.8; margin-bottom: 16px; text-align: justify;">
             Bu rehber çalışma; <strong>Millî Eğitim Bakanlığı Din Öğretimi Genel Müdürlüğü Öğretim Programları ve Materyalleri Daire Başkanlığı</strong> bünyesinde yürütülen ders kitabı ve öğretim materyali yazım süreçlerinde görev alan komisyon üyelerine, ölçme ve değerlendirme araçlarının hazırlanması, yapılandırılması ve öğrenme çıktılarıyla tutarlı biçimde eşleştirilmesinde rehberlik etmek amacıyla <strong>Ölçme ve Değerlendirme Komisyonu</strong> tarafından hazırlanmıştır.
         </p>
-        <div style="background-color: #F8FAFC; border-radius: 10px; padding: 18px 22px; border: 1px solid #E2E8F0;">
+        <div style="background-color: rgba(248, 250, 252, 0.85); border-radius: 10px; padding: 18px 22px; border: 1px solid #E2E8F0;">
             <h5 style="color: #0F172A; font-weight: 750; font-size: 1.05rem; margin-bottom: 10px;">📌 Örnek Uygulamaların Kapsamı ve Hazırlanış İlkeleri:</h5>
             <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 0.98rem; line-height: 1.75;">
                 <li style="margin-bottom: 6px;">
@@ -467,7 +486,7 @@ else:
     with col_baslik:
         st.markdown(f"""
         <div style="margin-bottom: 10px;">
-            <span style="background-color: #E2E8F0; color: #475569; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+            <span style="background-color: #CCFBF1; color: #0F766E; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
                 {secilen_arac.get('kategori', 'Ölçme Aracı')}
             </span>
             <h2 style="color: #0F172A; font-size: 1.85rem; font-weight: 800; margin-top: 8px; margin-bottom: 0;">
@@ -525,7 +544,7 @@ else:
             satirlar = [s.strip() for s in beceriler.split("\n") if s.strip()]
             for satir in satirlar:
                 temiz = satir.lstrip('•-* ')
-                rozetler_html += f'<div class="tymm-badge-item"><span style="color:#C91D24; margin-right:8px; font-weight:800;">✓</span> {temiz}</div>'
+                rozetler_html += f'<div class="tymm-badge-item"><span style="color:#0891B2; margin-right:8px; font-weight:800;">✓</span> {temiz}</div>'
         else:
             rozetler_html = '<div class="tymm-badge-item">Kayıtlı önerilen beceri bulunamadı.</div>'
 
