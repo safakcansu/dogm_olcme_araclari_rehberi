@@ -42,31 +42,64 @@ def arka_plan_css_olustur(gorsel_yolu):
 
 st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
 
-# 3. Light / Dark Temaya Özel Çift Katmanlı CSS
+# 3. Webfon Uyumlu Açık Tonlu CSS Teması
 TYMM_CSS = """
 <style>
-/* Sol Kenar Çubuğu */
+/* ============================================================
+   SOL KENAR ÇUBUĞU (SIDEBAR) - AÇIK VE FONA UYUMLU TONLAR
+   ============================================================ */
 section[data-testid="stSidebar"] {
-    background-color: #0F172A !important;
-    color: #F8FAFC !important;
+    background-color: rgba(241, 245, 249, 0.92) !important;
+    border-right: 1px solid #CBD5E1 !important;
+    backdrop-filter: blur(10px) !important;
 }
+
+/* Sidebar İçindeki Tüm Başlıklar ve Metinler (Koyu Kurumsal Lacivert) */
 section[data-testid="stSidebar"] h1, 
+section[data-testid="stSidebar"] h2, 
+section[data-testid="stSidebar"] h3, 
 section[data-testid="stSidebar"] p, 
 section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] span {
-    color: #F8FAFC !important;
+section[data-testid="stSidebar"] span,
+section[data-testid="stSidebar"] div {
+    color: #0F172A !important;
 }
+
+/* Sidebar İçindeki Açıklama (Caption) */
+section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+    color: #475569 !important;
+}
+
+/* Sidebar İçindeki Buton (Ana Sayfaya Dön vb.) */
 section[data-testid="stSidebar"] button {
-    background-color: #1E293B !important;
-    color: #F8FAFC !important;
-    border: 1px solid #334155 !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
     border-radius: 8px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease !important;
+}
+section[data-testid="stSidebar"] button * {
+    color: #0F172A !important;
+    font-weight: 700 !important;
 }
 section[data-testid="stSidebar"] button:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
+}
+section[data-testid="stSidebar"] button:hover * {
     color: #FFFFFF !important;
 }
+
+/* Sidebar İçindeki Seçim ve Radio Kutusu Elemanları */
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    border-color: #CBD5E1 !important;
+    color: #0F172A !important;
+}
+
+/* ============================================================
+   ANA SAYFA VE DİĞER BİLEŞENLER
+   ============================================================ */
 
 /* Kurumsal Banner */
 .tymm-header-banner {
@@ -103,11 +136,7 @@ section[data-testid="stSidebar"] button:hover {
     padding-left: 12px;
 }
 
-/* ============================================================
-   VARSAYILAN: LIGHT (AÇIK) MOD İÇİN BUTON VE SEKME DÜZENİ
-   ============================================================ */
-
-/* 1. Araç Butonları (Normal Durum: Açık Zemin, Koyu Yazı) */
+/* Araç Butonları (Light Mod) */
 div[data-testid="stButton"] > button {
     background-color: rgba(255, 255, 255, 0.95) !important;
     border: 1px solid #CBD5E1 !important;
@@ -122,8 +151,6 @@ div[data-testid="stButton"] > button * {
     font-weight: 700 !important;
     font-size: 0.98rem !important;
 }
-
-/* 1. Araç Butonları (HOVER: Turkuaz Mavi Zemin, Bembeyaz Yazı) */
 div[data-testid="stButton"] > button:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
@@ -134,7 +161,7 @@ div[data-testid="stButton"] > button:hover * {
     color: #FFFFFF !important;
 }
 
-/* 2. Sekmeler (Normal Durum: Açık Kutu, Koyu Yazı) */
+/* Sekmeler (Light Mod) */
 div[data-testid="stTabs"] {
     gap: 12px !important;
     margin-top: 15px !important;
@@ -153,8 +180,6 @@ div[data-testid="stTabs"] [data-baseweb="tab"] * {
     font-size: 1.05rem !important;
     font-weight: 750 !important;
 }
-
-/* 2. Sekmeler (HOVER: Turkuaz Mavi Zemin, Bembeyaz Yazı) */
 div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
@@ -163,8 +188,6 @@ div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
 div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
     color: #FFFFFF !important;
 }
-
-/* 2. Sekmeler (Seçili/Aktif Durum) */
 div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
@@ -178,11 +201,8 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     display: none !important;
 }
 
-/* ============================================================
-   KOYU (DARK) MOD İÇİN BUTON VE SEKME DÜZENİ
-   ============================================================ */
+/* Dark Mod Ayarları */
 @media (prefers-color-scheme: dark) {
-    /* Araç Butonları Normal: Koyu Zemin, Beyaz Yazı */
     div[data-testid="stButton"] > button {
         background-color: #0F172A !important;
         border: 1px solid #334155 !important;
@@ -191,8 +211,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     div[data-testid="stButton"] > button * {
         color: #FFFFFF !important;
     }
-    
-    /* Araç Butonları Hover: Yine Canlı Turkuaz Mavi Zemin, Bembeyaz Yazı */
     div[data-testid="stButton"] > button:hover {
         background-color: #0891B2 !important;
         border-color: #0891B2 !important;
@@ -201,40 +219,27 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     div[data-testid="stButton"] > button:hover * {
         color: #FFFFFF !important;
     }
-
-    /* Sekmeler Normal: Açık moddaki gibi SİYAH YAZI */
     div[data-testid="stTabs"] [data-baseweb="tab"] {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        background-color: #0F172A !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
     }
     div[data-testid="stTabs"] [data-baseweb="tab"] * {
-        color: #0F172A !important;
-        font-weight: 700 !important;
+        color: #FFFFFF !important;
     }
-
-    /* Sekmeler Hover: Koyu Siyah Vurgusu */
     div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
-        background-color: transparent !important;
-        border: none !important;
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
     }
     div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
-        color: #C91D24 !important;
+        color: #FFFFFF !important;
     }
-
-    /* Sekmeler Seçili (Aktif): Kırmızı Vurgulu Yazı */
     div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
     }
     div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
-        color: #C91D24 !important;
-        font-weight: 800 !important;
-    }
-    div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
-        background-color: #C91D24 !important;
-        display: block !important;
+        color: #FFFFFF !important;
     }
 }
 
