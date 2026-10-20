@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import base64
+import re
 
 # 1. Sayfa Yapılandırması
 st.set_page_config(
@@ -243,21 +244,52 @@ div[data-testid="stTabs"] button:nth-of-type(4)[aria-selected="true"] strong {
 }
 .box-ornek-cikti h5 {
     color: #92400e;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     font-size: 1.25rem;
     font-weight: 750;
-}
-.box-ornek-cikti p {
-    color: #1e293b;
-    font-size: 1.1rem;
-    line-height: 1.7;
-    margin-bottom: 0;
 }
 </style>
 """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-# 4. Dinamik Çoklu Görsel Tarayıcı Fonksiyonu
+# 4. Süreç Bileşenlerini Alt Alta ve Temiz Liste Yapan Fonksiyon
+def surec_bilesenlerini_bicimlendir(metin):
+    if not metin or str(metin) == "nan":
+        return "<p style='color: #64748b; font-size: 1.05rem;'>Bu örnek için Excel'de henüz özel bir öğrenme çıktısı tanımlanmamış.</p>"
+    
+    metin = str(metin).strip()
+    
+    # *a), a), *b), b), *1), 1) gibi süreç belirteçlerini yakala
+    pattern = r'(?=(\*?[a-zA-Z0-9]\)))'
+    parcalar = re.split(pattern, metin)
+    
+    if len(parcalar) <= 1:
+        return f"<p style='margin:0; font-size:1.1rem; line-height:1.7; color:#1e293b;'>{metin}</p>"
+    
+    ana_cikti = parcalar[0].strip()
+    html_cikti = f"<div style='font-size: 1.15rem; font-weight: 750; margin-bottom: 12px; color: #1e293b; line-height: 1.6;'>{ana_cikti}</div>"
+    html_cikti += "<ul style='margin: 0; padding-left: 10px; list-style-type: none;'>"
+    
+    i = 1
+    while i < len(parcalar):
+        madde_isareti = parcalar[i].strip()
+        madde_metni = parcalar[i+1].strip() if i+1 < len(parcalar) else ""
+        tam_madde = f"{madde_isareti} {madde_metni}".strip().lstrip("*").strip()
+        
+        # Parantez içi harf veya rakamı kalın yap
+        kapanis = tam_madde.find(")")
+        if kapanis != -1:
+            etiket = tam_madde[:kapanis+1]
+            icerik = tam_madde[kapanis+1:].strip()
+            html_cikti += f"<li style='margin-bottom: 10px; color: #334155; font-size: 1.05rem; line-height: 1.6; display: flex; align-items: flex-start;'><span style='margin-right: 8px; color: #ea580c; font-weight: 800;'>🔹</span><span><strong style='color: #9a3412;'>{etiket}</strong> {icerik}</span></li>"
+        else:
+            html_cikti += f"<li style='margin-bottom: 10px; color: #334155; font-size: 1.05rem; line-height: 1.6;'>🔹 {tam_madde}</li>"
+        i += 2
+        
+    html_cikti += "</ul>"
+    return html_cikti
+
+# 5. Dinamik Çoklu Görsel Tarayıcı Fonksiyonu
 def tum_ornekleri_bul(arac_id):
     uzantilar = [".png", ".jpg", ".jpeg", ".PNG", ".JPG"]
     bulunan_ornekler = []
@@ -278,7 +310,7 @@ def tum_ornekleri_bul(arac_id):
         
     return bulunan_ornekler
 
-# 5. Excel Verisini Yükleme
+# 6. Excel Verisini Yükleme
 @st.cache_data
 def veriyi_yukle(dosya_yolu):
     if not os.path.exists(dosya_yolu):
@@ -291,11 +323,11 @@ if df is None:
     st.error(f"`{EXCEL_YOLU}` dosyası bulunamadı! Lütfen Excel dosyasını `data` klasörüne ekleyin.")
     st.stop()
 
-# 6. Oturum Durumu Yönetimi
+# 7. Oturum Durumu Yönetimi
 if "secilen_arac" not in st.session_state:
     st.session_state.secilen_arac = None
 
-# 7. Sol Kenar Çubuğu (Sidebar)
+# 8. Sol Kenar Çubuğu (Sidebar)
 with st.sidebar:
     st.title("📋 Rehber Gezgini")
     
@@ -316,7 +348,7 @@ with st.sidebar:
         st.rerun()
 
 # ----------------------------------------------------
-# 8. GÖRÜNÜM 1: ANA KATEGORİ LİSTESİ
+# 9. GÖRÜNÜM 1: ANA KATEGORİ LİSTESİ
 # ----------------------------------------------------
 if st.session_state.secilen_arac is None:
     col_baslik, col_logo = st.columns([4, 1.2], vertical_alignment="center")
@@ -354,7 +386,7 @@ if st.session_state.secilen_arac is None:
         st.write("")
 
 # ----------------------------------------------------
-# 9. GÖRÜNÜM 2: DETAY SAYFASI (İKONSUZ & BOLD SEKMELER)
+# 10. GÖRÜNÜM 2: DETAY SAYFASI
 # ----------------------------------------------------
 else:
     secilen_arac = df[df["arac_adi"] == st.session_state.secilen_arac].iloc[0]
@@ -371,7 +403,7 @@ else:
             st.session_state.secilen_arac = None
             st.rerun()
 
-    # İkonsuz ve Doğrudan Bold Tanımlanmış 4 Ana Sekme
+    # İkonsuz ve Kalın (Bold) 4 Ana Sekme
     tab1, tab2, tab3, tab4 = st.tabs([
         "**1. Tanıtım**",
         "**2. Hazırlarken Dikkat Edilecek Hususlar**",
@@ -447,7 +479,8 @@ else:
                 cikti_sutun_adi = f"ornek{o_no}_cikti"
                 cikti_degeri = secilen_arac.get(cikti_sutun_adi) if cikti_sutun_adi in secilen_arac else None
                 
-                cikti_metni = str(cikti_degeri) if pd.notna(cikti_degeri) else "Bu örnek için Excel'de henüz özel bir öğrenme çıktısı tanımlanmamış."
+                # Süreç bileşenlerini alt alta dönüştüren fonksiyonu çalıştır
+                bicimli_cikti = surec_bilesenlerini_bicimlendir(cikti_degeri)
                 
                 st.markdown(f"### Örnek {arac_id}.{o_no}")
                 col_img, col_info = st.columns([3, 2], gap="large")
@@ -461,7 +494,7 @@ else:
                     st.markdown(f"""
                     <div class="box-ornek-cikti">
                         <h5>Örneğe Ait Öğrenme Çıktısı / Süreç Bileşeni</h5>
-                        <p>{cikti_metni}</p>
+                        {bicimli_cikti}
                     </div>
                     """, unsafe_allow_html=True)
                 
