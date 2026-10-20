@@ -42,7 +42,7 @@ def arka_plan_css_olustur(gorsel_yolu):
 
 st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
 
-# 3. Webfon Uyumlu Kurumsal CSS Teması
+# 3. KESİN ÇÖZÜM: Dark/Light Mod Hover Çakışmasını Engelleyen CSS
 TYMM_CSS = """
 <style>
 /* Sol Kenar Çubuğu */
@@ -61,7 +61,6 @@ section[data-testid="stSidebar"] button {
     color: #F8FAFC !important;
     border: 1px solid #334155 !important;
     border-radius: 8px !important;
-    transition: all 0.2s ease !important;
 }
 section[data-testid="stSidebar"] button:hover {
     background-color: #0891B2 !important;
@@ -104,7 +103,87 @@ section[data-testid="stSidebar"] button:hover {
     padding-left: 12px;
 }
 
-/* Expander (Açılır-Kapanır Başlık) Stili */
+/* ============================================================
+   ARAÇ BUTONLARI (KARTLAR) İÇİN KESİN HOVER ÇÖZÜMÜ
+   ============================================================ */
+
+/* Normal Durum: Koyu zemin, net beyaz yazı */
+div[data-testid="stButton"] > button {
+    background-color: #0F172A !important;
+    border: 1px solid #334155 !important;
+    border-radius: 12px !important;
+    padding: 14px 18px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* İçindeki yazılar normalde beyaz olsun */
+div[data-testid="stButton"] > button p,
+div[data-testid="stButton"] > button span,
+div[data-testid="stButton"] > button div {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+}
+
+/* HOVER (ÜZERİNE GELİNCE): Zemin Turkuaz Mavi, Yazı Parlak Beyaz */
+div[data-testid="stButton"] > button:hover {
+    background-color: #0891B2 !important;
+    border-color: #0891B2 !important;
+    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Hover anında TÜM alt etiketleri zorla beyaz yap */
+div[data-testid="stButton"] > button:hover * {
+    color: #FFFFFF !important;
+    background-color: transparent !important;
+}
+
+/* ============================================================
+   SEKME (TAB) BUTONLARI İÇİN KESİN HOVER ÇÖZÜMÜ
+   ============================================================ */
+div[data-testid="stTabs"] {
+    gap: 10px !important;
+    margin-top: 15px !important;
+    margin-bottom: 25px !important;
+}
+
+/* Sekmeler Normal Durum */
+div[data-testid="stTabs"] button[role="tab"] {
+    background-color: #1E293B !important;
+    border: 1px solid #334155 !important;
+    border-radius: 10px !important;
+    padding: 14px 22px !important;
+    transition: all 0.2s ease !important;
+}
+div[data-testid="stTabs"] button[role="tab"] * {
+    color: #F8FAFC !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+}
+
+/* Sekmeler Hover Durumu */
+div[data-testid="stTabs"] button[role="tab"]:hover {
+    background-color: #0891B2 !important;
+    border-color: #0891B2 !important;
+}
+div[data-testid="stTabs"] button[role="tab"]:hover * {
+    color: #FFFFFF !important;
+    background-color: transparent !important;
+}
+
+/* Sekmeler Seçili (Aktif) Durum */
+div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+    background-color: #0891B2 !important;
+    border-color: #0891B2 !important;
+    box-shadow: 0 4px 14px rgba(8, 145, 178, 0.4) !important;
+}
+div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] * {
+    color: #FFFFFF !important;
+}
+
+/* Expander */
 div[data-testid="stExpander"] {
     background-color: rgba(255, 255, 255, 0.94) !important;
     border: 1px solid #E2E8F0 !important;
@@ -118,79 +197,6 @@ div[data-testid="stExpander"] details summary span p {
     font-size: 1.25rem !important;
     font-weight: 800 !important;
     color: #0F172A !important;
-}
-
-/* Araç Butonları (Grid Kartları - Normal Durum) */
-div[data-testid="column"] button {
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    color: #0F172A !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 12px !important;
-    padding: 14px 18px !important;
-    font-weight: 650 !important;
-    font-size: 0.98rem !important;
-    text-align: left !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
-    backdrop-filter: blur(6px) !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-div[data-testid="column"] button p {
-    color: #0F172A !important;
-}
-
-/* Araç Butonları - Üzerine Gelince (Hover) */
-div[data-testid="column"] button:hover {
-    border-color: #0891B2 !important;
-    background-color: #0891B2 !important;
-    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.3) !important;
-    transform: translateY(-2px) !important;
-}
-div[data-testid="column"] button:hover p,
-div[data-testid="column"] button:hover span {
-    color: #FFFFFF !important;
-}
-
-/* Sekmeler (Tabs - Normal Durum) */
-div[data-testid="stTabs"] {
-    gap: 10px !important;
-    margin-top: 15px !important;
-    margin-bottom: 25px !important;
-}
-div[data-testid="stTabs"] button {
-    background-color: rgba(255, 255, 255, 0.90) !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 10px !important;
-    padding: 14px 22px !important;
-    backdrop-filter: blur(6px) !important;
-    transition: all 0.2s ease !important;
-}
-div[data-testid="stTabs"] button p,
-div[data-testid="stTabs"] button strong {
-    font-size: 1.1rem !important;
-    font-weight: 700 !important;
-    color: #334155 !important;
-}
-
-/* Sekmeler - Üzerine Gelince (Hover) */
-div[data-testid="stTabs"] button:hover {
-    background-color: #0E7490 !important;
-    border-color: #0E7490 !important;
-}
-div[data-testid="stTabs"] button:hover p,
-div[data-testid="stTabs"] button:hover strong,
-div[data-testid="stTabs"] button:hover span {
-    color: #FFFFFF !important;
-}
-
-/* Sekmeler - Seçili Durum */
-div[data-testid="stTabs"] button[aria-selected="true"] {
-    background-color: #0891B2 !important;
-    border-color: #0891B2 !important;
-    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.35) !important;
-}
-div[data-testid="stTabs"] button[aria-selected="true"] p,
-div[data-testid="stTabs"] button[aria-selected="true"] strong {
-    color: #FFFFFF !important;
 }
 
 /* Kartlar */
@@ -415,7 +421,7 @@ if st.session_state.secilen_arac is None:
         if os.path.exists(LOGO_YOLU):
             st.image(LOGO_YOLU, use_container_width=True)
 
-    # KURUMSAL TAKDİM (Açılır-Kapanır Ok Başlığı / Expander)
+    # KURUMSAL TAKDİM (Açılır-Kapanır Başlık)
     with st.expander("📋 SUNUŞ VE METODOLOJİK ÇERÇEVE", expanded=False):
         takdim_icerik = """
         <div style="padding: 10px 6px;">
@@ -552,75 +558,4 @@ else:
         metin = str(secilen_arac.get("dikkat_edilecekler", ""))
         li_icerik = ""
         if metin and metin != "nan":
-            satirlar = [s.strip() for s in metin.split("\n") if s.strip()]
-            for satir in satirlar:
-                li_icerik += f"<li>{satir.lstrip('•-* ')}</li>"
-        else:
-            li_icerik = "<li>Belirtilen husus bulunamadı.</li>"
-
-        st.markdown(f"""
-        <div class="tymm-card">
-            <div class="tymm-card-title">Hazırlık ve Yazım Sürecinde Dikkat Edilecek İlkeler</div>
-            <ul>
-                {li_icerik}
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # 3. Önerilen Beceriler
-    with tab3:
-        beceriler = str(secilen_arac.get("onerilen_beceriler", ""))
-        rozetler_html = ""
-        if beceriler and beceriler != "nan":
-            satirlar = [s.strip() for s in beceriler.split("\n") if s.strip()]
-            for satir in satirlar:
-                temiz = satir.lstrip('•-* ')
-                rozetler_html += f'<div class="tymm-badge-item"><span style="color:#0891B2; margin-right:8px; font-weight:800;">✓</span> {temiz}</div>'
-        else:
-            rozetler_html = '<div class="tymm-badge-item">Kayıtlı önerilen beceri bulunamadı.</div>'
-
-        st.markdown(f"""
-        <div class="tymm-card">
-            <div class="tymm-card-title">Bu Araçla Ölçülmesi Önerilen Beceriler ve Süreç Bileşenleri</div>
-            {rozetler_html}
-        </div>
-        """, unsafe_allow_html=True)
-
-    # 4. Örnek Görseller ve Çıktı Eşleşmesi
-    with tab4:
-        st.write("")
-        ornekler_listesi = tum_ornekleri_bul(arac_id)
-        
-        if not ornekler_listesi:
-            st.markdown(f"""
-            <div class="tymm-img-container">
-                <p style="color: #64748B; font-weight: 600; margin: 30px 0;">
-                    Bu ölçme aracına ait örnek görsel bulunamadı.<br>
-                    Beklenen dosya formatı: <code>assets/images/ornek{arac_id}_1.png / .jpg</code>
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            for o_no, gorsel_yolu_bulunan, dosya_adi in ornekler_listesi:
-                cikti_sutun_adi = f"ornek{o_no}_cikti"
-                cikti_degeri = secilen_arac.get(cikti_sutun_adi) if cikti_sutun_adi in secilen_arac else None
-                
-                bicimli_cikti = surec_bilesenlerini_bicimlendir(cikti_degeri)
-                
-                st.markdown(f"<h4 style='color:#0F172A; font-weight:800; margin-top:20px;'>Örnek {arac_id}.{o_no}</h4>", unsafe_allow_html=True)
-                col_img, col_info = st.columns([3, 2], gap="large")
-                
-                with col_img:
-                    st.markdown('<div class="tymm-img-container">', unsafe_allow_html=True)
-                    st.image(gorsel_yolu_bulunan, caption=f"Örnek {arac_id}.{o_no} ({dosya_adi})", use_container_width=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
-                
-                with col_info:
-                    st.markdown(f"""
-                    <div class="tymm-cikti-box">
-                        <h5>Örneğe Ait Öğrenme Çıktısı / Süreç Bileşeni</h5>
-                        {bicimli_cikti}
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                st.markdown("<hr style='border: 0; border-top: 1px solid #E2E8F0; margin: 30px 0;'>", unsafe_allow_html=True)
+            satirlar =
