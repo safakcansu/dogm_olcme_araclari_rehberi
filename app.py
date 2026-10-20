@@ -42,7 +42,7 @@ def arka_plan_css_olustur(gorsel_yolu):
 
 st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
 
-# 3. KESİN ÇÖZÜM: Dark/Light Mod Hover Çakışmasını Engelleyen CSS
+# 3. Light / Dark Temaya Özel Çift Katmanlı CSS
 TYMM_CSS = """
 <style>
 /* Sol Kenar Çubuğu */
@@ -104,83 +104,131 @@ section[data-testid="stSidebar"] button:hover {
 }
 
 /* ============================================================
-   ARAÇ BUTONLARI (KARTLAR) İÇİN KESİN HOVER ÇÖZÜMÜ
+   VARSAYILAN: LIGHT (AÇIK) MOD İÇİN BUTON VE SEKME DÜZENİ
    ============================================================ */
 
-/* Normal Durum: Koyu zemin, net beyaz yazı */
+/* 1. Araç Butonları (Normal Durum: Açık Zemin, Koyu Yazı) */
 div[data-testid="stButton"] > button {
-    background-color: #0F172A !important;
-    border: 1px solid #334155 !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #CBD5E1 !important;
     border-radius: 12px !important;
     padding: 14px 18px !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
+    backdrop-filter: blur(6px) !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
-
-/* İçindeki yazılar normalde beyaz olsun */
-div[data-testid="stButton"] > button p,
-div[data-testid="stButton"] > button span,
-div[data-testid="stButton"] > button div {
-    color: #FFFFFF !important;
+div[data-testid="stButton"] > button * {
+    color: #0F172A !important;
     font-weight: 700 !important;
-    font-size: 1rem !important;
+    font-size: 0.98rem !important;
 }
 
-/* HOVER (ÜZERİNE GELİNCE): Zemin Turkuaz Mavi, Yazı Parlak Beyaz */
+/* 1. Araç Butonları (HOVER: Turkuaz Mavi Zemin, Bembeyaz Yazı) */
 div[data-testid="stButton"] > button:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
-    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.4) !important;
+    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.35) !important;
     transform: translateY(-2px) !important;
 }
-
-/* Hover anında TÜM alt etiketleri zorla beyaz yap */
 div[data-testid="stButton"] > button:hover * {
     color: #FFFFFF !important;
-    background-color: transparent !important;
 }
 
-/* ============================================================
-   SEKME (TAB) BUTONLARI İÇİN KESİN HOVER ÇÖZÜMÜ
-   ============================================================ */
+/* 2. Sekmeler (Normal Durum: Açık Kutu, Koyu Yazı) */
 div[data-testid="stTabs"] {
-    gap: 10px !important;
+    gap: 12px !important;
     margin-top: 15px !important;
     margin-bottom: 25px !important;
 }
-
-/* Sekmeler Normal Durum */
-div[data-testid="stTabs"] button[role="tab"] {
-    background-color: #1E293B !important;
-    border: 1px solid #334155 !important;
+div[data-testid="stTabs"] [data-baseweb="tab"] {
+    background-color: rgba(255, 255, 255, 0.90) !important;
+    border: 1px solid #CBD5E1 !important;
     border-radius: 10px !important;
-    padding: 14px 22px !important;
+    padding: 12px 22px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
     transition: all 0.2s ease !important;
 }
-div[data-testid="stTabs"] button[role="tab"] * {
-    color: #F8FAFC !important;
+div[data-testid="stTabs"] [data-baseweb="tab"] * {
+    color: #334155 !important;
     font-size: 1.05rem !important;
-    font-weight: 700 !important;
+    font-weight: 750 !important;
 }
 
-/* Sekmeler Hover Durumu */
-div[data-testid="stTabs"] button[role="tab"]:hover {
+/* 2. Sekmeler (HOVER: Turkuaz Mavi Zemin, Bembeyaz Yazı) */
+div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.35) !important;
 }
-div[data-testid="stTabs"] button[role="tab"]:hover * {
+div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
     color: #FFFFFF !important;
-    background-color: transparent !important;
 }
 
-/* Sekmeler Seçili (Aktif) Durum */
-div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+/* 2. Sekmeler (Seçili/Aktif Durum) */
+div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
-    box-shadow: 0 4px 14px rgba(8, 145, 178, 0.4) !important;
+    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.45) !important;
 }
-div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] * {
+div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
     color: #FFFFFF !important;
+    font-weight: 800 !important;
+}
+div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
+    display: none !important;
+}
+
+/* ============================================================
+   KOYU (DARK) MOD İÇİN BUTON VE SEKME DÜZENİ
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+    /* Araç Butonları Normal: Koyu Zemin, Beyaz Yazı */
+    div[data-testid="stButton"] > button {
+        background-color: #0F172A !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+    }
+    div[data-testid="stButton"] > button * {
+        color: #FFFFFF !important;
+    }
+    
+    /* Araç Butonları Hover: Yine Canlı Turkuaz Mavi Zemin, Bembeyaz Yazı */
+    div[data-testid="stButton"] > button:hover {
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
+        box-shadow: 0 8px 20px rgba(8, 145, 178, 0.45) !important;
+    }
+    div[data-testid="stButton"] > button:hover * {
+        color: #FFFFFF !important;
+    }
+
+    /* Sekmeler Normal: Koyu Zemin, Beyaz Yazı */
+    div[data-testid="stTabs"] [data-baseweb="tab"] {
+        background-color: #0F172A !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab"] * {
+        color: #FFFFFF !important;
+    }
+
+    /* Sekmeler Hover: Canlı Turkuaz Mavi Zemin, Bembeyaz Yazı */
+    div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
+        color: #FFFFFF !important;
+    }
+
+    /* Sekmeler Seçili */
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
+        color: #FFFFFF !important;
+    }
 }
 
 /* Expander */
