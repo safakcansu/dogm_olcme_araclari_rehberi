@@ -42,7 +42,7 @@ def arka_plan_css_olustur(gorsel_yolu):
 
 st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
 
-# 3. Sekme Başlıklarını Siyah Yapan Kurumsal CSS
+# 3. Light / Dark Temaya Özel Çift Katmanlı CSS
 TYMM_CSS = """
 <style>
 /* Sol Kenar Çubuğu */
@@ -103,81 +103,132 @@ section[data-testid="stSidebar"] button:hover {
     padding-left: 12px;
 }
 
-/* Araç Butonları */
+/* ============================================================
+   VARSAYILAN: LIGHT (AÇIK) MOD İÇİN BUTON VE SEKME DÜZENİ
+   ============================================================ */
+
+/* 1. Araç Butonları (Normal Durum: Açık Zemin, Koyu Yazı) */
 div[data-testid="stButton"] > button {
-    background-color: #0F172A !important;
-    border: 1px solid #334155 !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #CBD5E1 !important;
     border-radius: 12px !important;
     padding: 14px 18px !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
+    backdrop-filter: blur(6px) !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 div[data-testid="stButton"] > button * {
-    color: #FFFFFF !important;
+    color: #0F172A !important;
     font-weight: 700 !important;
-    font-size: 1rem !important;
+    font-size: 0.98rem !important;
 }
+
+/* 1. Araç Butonları (HOVER: Turkuaz Mavi Zemin, Bembeyaz Yazı) */
 div[data-testid="stButton"] > button:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
-    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.4) !important;
+    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.35) !important;
     transform: translateY(-2px) !important;
 }
 div[data-testid="stButton"] > button:hover * {
     color: #FFFFFF !important;
 }
 
-/* ============================================================
-   SEKME (TAB) BAŞLIKLARI - YAZILARI KESİN SİYAH YAPMA
-   ============================================================ */
+/* 2. Sekmeler (Normal Durum: Açık Kutu, Koyu Yazı) */
 div[data-testid="stTabs"] {
     gap: 12px !important;
     margin-top: 15px !important;
     margin-bottom: 25px !important;
 }
-
-/* Sekmelerin varsayılan kutu tasarımı */
 div[data-testid="stTabs"] [data-baseweb="tab"] {
-    background-color: #FFFFFF !important;
+    background-color: rgba(255, 255, 255, 0.90) !important;
     border: 1px solid #CBD5E1 !important;
     border-radius: 10px !important;
     padding: 12px 22px !important;
     box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
     transition: all 0.2s ease !important;
 }
-
-/* Sekme başlıklarının rengi: KESİN SİYAH */
-div[data-testid="stTabs"] [data-baseweb="tab"] *,
-div[data-testid="stTabs"] [data-baseweb="tab"] p,
-div[data-testid="stTabs"] [data-baseweb="tab"] span,
-div[data-testid="stTabs"] [data-baseweb="tab"] strong {
-    color: #000000 !important;
+div[data-testid="stTabs"] [data-baseweb="tab"] * {
+    color: #334155 !important;
     font-size: 1.05rem !important;
-    font-weight: 800 !important;
-    opacity: 1 !important;
+    font-weight: 750 !important;
 }
 
-/* Sekmeler Hover (Üzerine Gelince) */
+/* 2. Sekmeler (HOVER: Turkuaz Mavi Zemin, Bembeyaz Yazı) */
 div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.35) !important;
 }
 div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
     color: #FFFFFF !important;
 }
 
-/* Seçili (Aktif) Sekme */
+/* 2. Sekmeler (Seçili/Aktif Durum) */
 div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
-    box-shadow: 0 4px 14px rgba(8, 145, 178, 0.4) !important;
+    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.45) !important;
 }
 div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
     color: #FFFFFF !important;
+    font-weight: 800 !important;
 }
-
 div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     display: none !important;
+}
+
+/* ============================================================
+   KOYU (DARK) MOD İÇİN BUTON VE SEKME DÜZENİ
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+    /* Araç Butonları Normal: Koyu Zemin, Beyaz Yazı */
+    div[data-testid="stButton"] > button {
+        background-color: #0F172A !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+    }
+    div[data-testid="stButton"] > button * {
+        color: #FFFFFF !important;
+    }
+    
+    /* Araç Butonları Hover: Yine Canlı Turkuaz Mavi Zemin, Bembeyaz Yazı */
+    div[data-testid="stButton"] > button:hover {
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
+        box-shadow: 0 8px 20px rgba(8, 145, 178, 0.45) !important;
+    }
+    div[data-testid="stButton"] > button:hover * {
+        color: #FFFFFF !important;
+    }
+
+    /* Sekmeler Normal: Koyu Zemin, Beyaz Yazı */
+    div[data-testid="stTabs"] [data-baseweb="tab"] {
+        background-color: #0F172A !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab"] * {
+        color: #FFFFFF !important;
+    }
+
+    /* Sekmeler Hover: Canlı Turkuaz Mavi Zemin, Bembeyaz Yazı */
+    div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
+        color: #FFFFFF !important;
+    }
+
+    /* Sekmeler Seçili */
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+        background-color: #0891B2 !important;
+        border-color: #0891B2 !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
+        color: #FFFFFF !important;
+    }
 }
 
 /* Expander */
