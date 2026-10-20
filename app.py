@@ -74,7 +74,7 @@ div[data-testid="stTabs"] button strong {
     line-height: 1.3 !important;
 }
 
-/* 1. SEKME: 1. TANITIM (Petrol Mavisi) */
+/* 1. SEKME: TANITIM (Petrol Mavisi) */
 div[data-testid="stTabs"] button:nth-of-type(1) {
     background-color: rgba(224, 242, 254, 0.85) !important;
     border-color: #bae6fd !important;
@@ -93,7 +93,7 @@ div[data-testid="stTabs"] button:nth-of-type(1)[aria-selected="true"] strong {
     color: #ffffff !important;
 }
 
-/* 2. SEKME: 2. HAZIRLARKEN DİKKAT EDİLECEK HUSUSLAR (Sıcak Turuncu) */
+/* 2. SEKME: HAZIRLARKEN DİKKAT EDİLECEK HUSUSLAR (Sıcak Turuncu) */
 div[data-testid="stTabs"] button:nth-of-type(2) {
     background-color: rgba(255, 237, 213, 0.85) !important;
     border-color: #fed7aa !important;
@@ -112,7 +112,7 @@ div[data-testid="stTabs"] button:nth-of-type(2)[aria-selected="true"] strong {
     color: #ffffff !important;
 }
 
-/* 3. SEKME: 3. ÖNERİLEN BECERİLER / SÜREÇ BİLEŞENLERİ (Turkuaz/Zümrüt) */
+/* 3. SEKME: ÖNERİLEN BECERİLER / SÜREÇ BİLEŞENLERİ (Turkuaz/Zümrüt) */
 div[data-testid="stTabs"] button:nth-of-type(3) {
     background-color: rgba(204, 251, 241, 0.85) !important;
     border-color: #99f6e4 !important;
@@ -131,7 +131,7 @@ div[data-testid="stTabs"] button:nth-of-type(3)[aria-selected="true"] strong {
     color: #ffffff !important;
 }
 
-/* 4. SEKME: 4. ÖRNEK & ÇIKTI EŞLEŞMESİ (Altın / Kehribar) */
+/* 4. SEKME: ÖRNEK & ÇIKTI EŞLEŞMESİ (Altın / Kehribar) */
 div[data-testid="stTabs"] button:nth-of-type(4) {
     background-color: rgba(254, 243, 199, 0.85) !important;
     border-color: #fde68a !important;
