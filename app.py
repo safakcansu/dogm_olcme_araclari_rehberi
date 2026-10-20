@@ -45,16 +45,13 @@ st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
 # 3. Webfon Uyumlu Açık Tonlu CSS Teması
 TYMM_CSS = """
 <style>
-/* ============================================================
-   SOL KENAR ÇUBUĞU (SIDEBAR) - AÇIK VE FONA UYUMLU TONLAR
-   ============================================================ */
+/* Sol Kenar Çubuğu (Açık ve Fona Uyumlu) */
 section[data-testid="stSidebar"] {
     background-color: rgba(241, 245, 249, 0.92) !important;
     border-right: 1px solid #CBD5E1 !important;
     backdrop-filter: blur(10px) !important;
 }
 
-/* Sidebar İçindeki Tüm Başlıklar ve Metinler (Koyu Kurumsal Lacivert) */
 section[data-testid="stSidebar"] h1, 
 section[data-testid="stSidebar"] h2, 
 section[data-testid="stSidebar"] h3, 
@@ -65,12 +62,10 @@ section[data-testid="stSidebar"] div {
     color: #0F172A !important;
 }
 
-/* Sidebar İçindeki Açıklama (Caption) */
 section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
     color: #475569 !important;
 }
 
-/* Sidebar İçindeki Buton (Ana Sayfaya Dön vb.) */
 section[data-testid="stSidebar"] button {
     background-color: #FFFFFF !important;
     border: 1px solid #CBD5E1 !important;
@@ -90,16 +85,11 @@ section[data-testid="stSidebar"] button:hover * {
     color: #FFFFFF !important;
 }
 
-/* Sidebar İçindeki Seçim ve Radio Kutusu Elemanları */
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
     background-color: #FFFFFF !important;
     border-color: #CBD5E1 !important;
     color: #0F172A !important;
 }
-
-/* ============================================================
-   ANA SAYFA VE DİĞER BİLEŞENLER
-   ============================================================ */
 
 /* Kurumsal Banner */
 .tymm-header-banner {
@@ -136,7 +126,7 @@ section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
     padding-left: 12px;
 }
 
-/* Araç Butonları (Light Mod) */
+/* Araç Butonları */
 div[data-testid="stButton"] > button {
     background-color: rgba(255, 255, 255, 0.95) !important;
     border: 1px solid #CBD5E1 !important;
@@ -161,7 +151,7 @@ div[data-testid="stButton"] > button:hover * {
     color: #FFFFFF !important;
 }
 
-/* Sekmeler (Light Mod) */
+/* Sekmeler */
 div[data-testid="stTabs"] {
     gap: 12px !important;
     margin-top: 15px !important;
@@ -201,7 +191,7 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     display: none !important;
 }
 
-/* Dark Mod Ayarları */
+/* Dark Mod Uyumu */
 @media (prefers-color-scheme: dark) {
     div[data-testid="stButton"] > button {
         background-color: #0F172A !important;
@@ -214,11 +204,11 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     div[data-testid="stButton"] > button:hover {
         background-color: #0891B2 !important;
         border-color: #0891B2 !important;
-        box-shadow: 0 8px 20px rgba(8, 145, 178, 0.45) !important;
     }
     div[data-testid="stButton"] > button:hover * {
         color: #FFFFFF !important;
     }
+
     div[data-testid="stTabs"] [data-baseweb="tab"] {
         background-color: #0F172A !important;
         border: 1px solid #334155 !important;
@@ -397,9 +387,9 @@ def tum_ornekleri_bul(arac_id):
         ornek_no += 1
     return bulunan_ornekler
 
-# 6. Excel Verilerini Yükleme
+# 6. Excel Verilerini Otomatik Değişim Takibiyle Yükleme
 @st.cache_data
-def verileri_yukle(dosya_yolu):
+def verileri_yukle(dosya_yolu, dosya_zamani):
     if not os.path.exists(dosya_yolu):
         return None, None
     try:
@@ -416,7 +406,8 @@ def verileri_yukle(dosya_yolu):
     except Exception as e:
         return None, None
 
-df, df_beceriler = verileri_yukle(EXCEL_YOLU)
+dosya_zamani = os.path.getmtime(EXCEL_YOLU) if os.path.exists(EXCEL_YOLU) else 0
+df, df_beceriler = verileri_yukle(EXCEL_YOLU, dosya_zamani)
 
 if df is None:
     st.error(f"`{EXCEL_YOLU}` dosyası bulunamadı! Lütfen Excel dosyasını `data` klasörüne ekleyin.")
@@ -481,7 +472,7 @@ if st.session_state.secilen_arac is None:
         if os.path.exists(LOGO_YOLU):
             st.image(LOGO_YOLU, use_container_width=True)
 
-    # KURUMSAL TAKDİM (Açılır-Kapanır Başlık)
+    # KURUMSAL TAKDİM
     with st.expander("📋 SUNUŞ VE METODOLOJİK ÇERÇEVE", expanded=False):
         takdim_icerik = """
         <div style="padding: 10px 6px;">
@@ -652,7 +643,7 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-    # 4. Örnek Görseller ve Çıktı Eşleşmesi
+    # 4. Örnek Görseller ve Çıktı Eşleşmesi (Hatasız HTML Render)
     with tab4:
         st.write("")
         ornekler_listesi = tum_ornekleri_bul(arac_id)
