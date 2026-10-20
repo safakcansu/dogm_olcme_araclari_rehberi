@@ -558,4 +558,75 @@ else:
         metin = str(secilen_arac.get("dikkat_edilecekler", ""))
         li_icerik = ""
         if metin and metin != "nan":
-            satirlar =
+            satirlar = [s.strip() for s in metin.split("\n") if s.strip()]
+            for satir in satirlar:
+                li_icerik += f"<li>{satir.lstrip('•-* ')}</li>"
+        else:
+            li_icerik = "<li>Belirtilen husus bulunamadı.</li>"
+
+        st.markdown(f"""
+        <div class="tymm-card">
+            <div class="tymm-card-title">Hazırlık ve Yazım Sürecinde Dikkat Edilecek İlkeler</div>
+            <ul>
+                {li_icerik}
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # 3. Önerilen Beceriler
+    with tab3:
+        beceriler = str(secilen_arac.get("onerilen_beceriler", ""))
+        rozetler_html = ""
+        if beceriler and beceriler != "nan":
+            satirlar = [s.strip() for s in beceriler.split("\n") if s.strip()]
+            for satir in satirlar:
+                temiz = satir.lstrip('•-* ')
+                rozetler_html += f'<div class="tymm-badge-item"><span style="color:#0891B2; margin-right:8px; font-weight:800;">✓</span> {temiz}</div>'
+        else:
+            rozetler_html = '<div class="tymm-badge-item">Kayıtlı önerilen beceri bulunamadı.</div>'
+
+        st.markdown(f"""
+        <div class="tymm-card">
+            <div class="tymm-card-title">Bu Araçla Ölçülmesi Önerilen Beceriler ve Süreç Bileşenleri</div>
+            {rozetler_html}
+        </div>
+        """, unsafe_allow_html=True)
+
+    # 4. Örnek Görseller ve Çıktı Eşleşmesi
+    with tab4:
+        st.write("")
+        ornekler_listesi = tum_ornekleri_bul(arac_id)
+        
+        if not ornekler_listesi:
+            st.markdown(f"""
+            <div class="tymm-img-container">
+                <p style="color: #64748B; font-weight: 600; margin: 30px 0;">
+                    Bu ölçme aracına ait örnek görsel bulunamadı.<br>
+                    Beklenen dosya formatı: <code>assets/images/ornek{arac_id}_1.png / .jpg</code>
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            for o_no, gorsel_yolu_bulunan, dosya_adi in ornekler_listesi:
+                cikti_sutun_adi = f"ornek{o_no}_cikti"
+                cikti_degeri = secilen_arac.get(cikti_sutun_adi) if cikti_sutun_adi in secilen_arac else None
+                
+                bicimli_cikti = surec_bilesenlerini_bicimlendir(cikti_degeri)
+                
+                st.markdown(f"<h4 style='color:#0F172A; font-weight:800; margin-top:20px;'>Örnek {arac_id}.{o_no}</h4>", unsafe_allow_html=True)
+                col_img, col_info = st.columns([3, 2], gap="large")
+                
+                with col_img:
+                    st.markdown('<div class="tymm-img-container">', unsafe_allow_html=True)
+                    st.image(gorsel_yolu_bulunan, caption=f"Örnek {arac_id}.{o_no} ({dosya_adi})", use_container_width=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                
+                with col_info:
+                    st.markdown(f"""
+                    <div class="tymm-cikti-box">
+                        <h5>Örneğe Ait Öğrenme Çıktısı / Süreç Bileşeni</h5>
+                        {bicimli_cikti}
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("<hr style='border: 0; border-top: 1px solid #E2E8F0; margin: 30px 0;'>", unsafe_allow_html=True)
