@@ -16,6 +16,7 @@ st.set_page_config(
 GORSEL_KLASORU = os.path.join("assets", "images")
 FON_GORSELI_PNG = os.path.join(GORSEL_KLASORU, "webfon.png")
 FON_GORSELI_JPG = os.path.join(GORSEL_KLASORU, "webfon.jpg")
+SOL_PANEL_GORSELI = os.path.join(GORSEL_KLASORU, "solpanel.png")
 EXCEL_YOLU = os.path.join("data", "araclar.xlsx")
 LOGO_YOLU = os.path.join(GORSEL_KLASORU, "DOGM_Logo_Yan_.png")
 
@@ -420,8 +421,11 @@ if "secilen_arac" not in st.session_state:
 if "aktif_gorunum" not in st.session_state:
     st.session_state.aktif_gorunum = "araclar"
 
-# 8. Sol Kenar Çubuğu
+# 8. Sol Kenar Çubuğu (Görsel Entegre Edildi)
 with st.sidebar:
+    if os.path.exists(SOL_PANEL_GORSELI):
+        st.image(SOL_PANEL_GORSELI, use_container_width=True)
+    
     st.markdown("### 📘 Maarif Modeli")
     st.caption("Ölçme ve Değerlendirme Rehberi")
     
@@ -643,7 +647,7 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-    # 4. Örnek Görseller ve Çıktı Eşleşmesi (Hatasız HTML Render)
+    # 4. Örnek Görseller ve Çıktı Eşleşmesi
     with tab4:
         st.write("")
         ornekler_listesi = tum_ornekleri_bul(arac_id)
