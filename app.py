@@ -365,16 +365,6 @@ div[data-testid="stExpander"] details summary span p {
 /* ============================================================
    SAYFA ALTI (FOOTER) ÖNCEKİ / SONRAKİ ARAÇ BUTONLARI (HOVERLI)
    ============================================================ */
-.footer-nav-container {
-    background-color: rgba(255, 255, 255, 0.92);
-    border: 1px solid #E2E8F0;
-    border-radius: 16px;
-    padding: 18px 24px;
-    margin-top: 40px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-    backdrop-filter: blur(8px);
-}
 
 div[data-testid="column"]:has(button[key^="nav_alt_"]) button {
     background-color: #FFFFFF !important;
