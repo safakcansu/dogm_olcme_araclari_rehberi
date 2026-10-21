@@ -576,15 +576,14 @@ else:
     secilen_arac = df[df["arac_adi"] == st.session_state.secilen_arac].iloc[0]
     arac_id = int(secilen_arac["arac_id"])
 
-    # SAĞ ÜSTTE HER ZAMAN SAYFAYLA BİRLİKTE SABİT GEZEN (FLOATING) BUTON
-    # SAĞ ÜSTTE HER ZAMAN SAYFAYLA BİRLİKTE SABİT GEZEN (FLOATING) BUTON
+    # SAĞ ÜSTTE HER ZAMAN SAYFAYLA BİRLİKTE SABİT GEZEN (FLOATING) AÇIK RENK BUTON
     st.markdown("""
     <div style="position: fixed; top: 75px; right: 35px; z-index: 9999999;">
         <a href="?action=geri" target="_self" style="text-decoration: none;">
             <div style="
-                background-color: #0F172A;
-                color: #FFFFFF;
-                border: 2px solid #0891B2;
+                background-color: rgba(255, 255, 255, 0.95);
+                color: #0F172A;
+                border: 1.5px solid #CBD5E1;
                 border-radius: 50px;
                 padding: 10px 22px;
                 font-weight: 800;
@@ -592,11 +591,12 @@ else:
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                box-shadow: 0 8px 24px rgba(15, 23, 42, 0.4);
+                box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+                backdrop-filter: blur(8px);
                 cursor: pointer;
                 transition: all 0.2s ease;
-            " onmouseover="this.style.backgroundColor='#0891B2'; this.style.transform='scale(1.05)';"
-               onmouseout="this.style.backgroundColor='#0F172A'; this.style.transform='scale(1)';">
+            " onmouseover="this.style.backgroundColor='#0891B2'; this.style.borderColor='#0891B2'; this.style.color='#FFFFFF'; this.style.transform='scale(1.05)';"
+               onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.95)'; this.style.borderColor='#CBD5E1'; this.style.color='#0F172A'; this.style.transform='scale(1)';">
                 <span>⬅️</span>
                 <span>Geri Dön</span>
             </div>
