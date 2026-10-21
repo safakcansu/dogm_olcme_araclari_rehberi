@@ -422,12 +422,17 @@ if "aktif_gorunum" not in st.session_state:
     st.session_state.aktif_gorunum = "araclar"
 
 
-# 8. Sol Kenar Çubuğu (Görsel Orijinal Genişliğe Geri Döndürüldü)
+# 8. Sol Kenar Çubuğu (Görsel %15 Büyütüldü)
 with st.sidebar:
     if os.path.exists(SOL_PANEL_GORSELI):
-        st.image(SOL_PANEL_GORSELI, use_container_width=True)
+        st.markdown(f"""
+        <div style="display: flex; justify-content: center; overflow: visible; margin-bottom: 12px;">
+            <img src="data:image/png;base64,{base64.b64encode(open(SOL_PANEL_GORSELI, 'rb').read()).decode()}" 
+                 style="width: 115%; max-width: 115%; border-radius: 8px;">
+        </div>
+        """, unsafe_allow_html=True)
     
-    st.markdown("### **Türkiye Yüzyılı Maarif Modeli**")
+    st.markdown("### 📘 Maarif Modeli")
     st.caption("Ölçme ve Değerlendirme Rehberi")
     
     if st.button("🏠 Ana Sayfaya Dön", use_container_width=True):
