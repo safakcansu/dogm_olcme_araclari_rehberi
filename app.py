@@ -321,7 +321,10 @@ div[data-testid="stExpander"] details summary span p {
     font-size: 1.15rem;
     font-weight: 800;
 }
-/* Sağ Üst Kayan Buton - Açık Zemin ve Turkuaz Hover */
+
+/* ============================================================
+   SAĞ ÜSTTE SABİT GEZEN FLOATING BUTON STİLİ
+   ============================================================ */
 .floating-back-link {
     text-decoration: none !important;
 }
@@ -348,7 +351,6 @@ div[data-testid="stExpander"] details summary span p {
     transition: color 0.2s ease !important;
 }
 
-/* Üstüne Gelince: Canlı Turkuaz Zemin, Beyaz Yazı ve Hafif Büyüme */
 .floating-back-box:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
@@ -357,6 +359,32 @@ div[data-testid="stExpander"] details summary span p {
 }
 
 .floating-back-box:hover span {
+    color: #FFFFFF !important;
+}
+
+/* ============================================================
+   ÖNCEKİ / SONRAKİ ARAÇ BUTONLARI (HOVER EFEKTLİ)
+   ============================================================ */
+div[data-testid="column"]:has(button[key^="nav_"]) button {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border: 1.5px solid #CBD5E1 !important;
+    border-radius: 10px !important;
+    padding: 10px 18px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
+    transition: all 0.25s ease !important;
+}
+div[data-testid="column"]:has(button[key^="nav_"]) button * {
+    color: #0F172A !important;
+    font-weight: 750 !important;
+    font-size: 0.95rem !important;
+}
+div[data-testid="column"]:has(button[key^="nav_"]) button:hover {
+    background-color: #0891B2 !important;
+    border-color: #0891B2 !important;
+    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.35) !important;
+    transform: translateY(-2px) !important;
+}
+div[data-testid="column"]:has(button[key^="nav_"]) button:hover * {
     color: #FFFFFF !important;
 }
 </style>
@@ -450,7 +478,6 @@ if "secilen_arac" not in st.session_state:
 if "aktif_gorunum" not in st.session_state:
     st.session_state.aktif_gorunum = "araclar"
 
-# Sağ üstteki sabit butona tıklandığında URL üzerinden geri dönüş tetikleme
 if "action" in st.query_params and st.query_params["action"] == "geri":
     st.session_state.secilen_arac = None
     st.query_params.clear()
@@ -611,10 +638,17 @@ if st.session_state.secilen_arac is None:
 # 10. GÖRÜNÜM 2: DETAY SAYFASI
 # ----------------------------------------------------
 else:
+    # Tüm araç adlarının sırasını al (Önceki/Sonraki hesaplamak için)
+    tum_araclar = df["arac_adi"].dropna().tolist()
+    secilen_index = tum_araclar.index(st.session_state.secilen_arac)
+    
+    onceki_arac = tum_araclar[secilen_index - 1] if secilen_index > 0 else None
+    sonraki_arac = tum_araclar[secilen_index + 1] if secilen_index < len(tum_araclar) - 1 else None
+
     secilen_arac = df[df["arac_adi"] == st.session_state.secilen_arac].iloc[0]
     arac_id = int(secilen_arac["arac_id"])
 
-  # SAĞ ÜSTTE SABİT GEZEN TURKUAZ HOVER'LI BUTON
+    # SAĞ ÜSTTE SABİT GEZEN FLOATING BUTON
     st.markdown("""
     <div style="position: fixed; top: 75px; right: 35px; z-index: 9999999;">
         <a href="?action=geri" target="_self" class="floating-back-link">
@@ -637,6 +671,19 @@ else:
         </h2>
     </div>
     """, unsafe_allow_html=True)
+
+    # ÜST NAVİGASYON (Önceki / Sonraki Araç Butonları)
+    col_nav_sol, col_nav_orta, col_nav_sag = st.columns([2, 5, 2])
+    with col_nav_sol:
+        if onceki_arac:
+            if st.button("⏮️ Önceki Araç", key="nav_ust_onceki", use_container_width=True):
+                st.session_state.secilen_arac = onceki_arac
+                st.rerun()
+    with col_nav_sag:
+        if sonraki_arac:
+            if st.button("Sonraki Araç ⏭️", key="nav_ust_sonraki", use_container_width=True):
+                st.session_state.secilen_arac = sonraki_arac
+                st.rerun()
 
     # 4 Ana Sekme
     tab1, tab2, tab3, tab4 = st.tabs([
@@ -733,3 +780,17 @@ else:
                     """, unsafe_allow_html=True)
                 
                 st.markdown("<hr style='border: 0; border-top: 1px solid #E2E8F0; margin: 30px 0;'>", unsafe_allow_html=True)
+
+    # ALT NAVİGASYON (Sayfa sonuna gelindiğinde doğrudan bir sonrakine geçiş için)
+    st.write("")
+    col_alt_sol, col_alt_orta, col_alt_sag = st.columns([2, 5, 2])
+    with col_alt_sol:
+        if onceki_arac:
+            if st.button("⏮️ Önceki Araç", key="nav_alt_onceki", use_container_width=True):
+                st.session_state.secilen_arac = onceki_arac
+                st.rerun()
+    with col_alt_sag:
+        if sonraki_arac:
+            if st.button("Sonraki Araç ⏭️", key="nav_alt_sonraki", use_container_width=True):
+                st.session_state.secilen_arac = sonraki_arac
+                st.rerun()
