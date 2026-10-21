@@ -321,6 +321,44 @@ div[data-testid="stExpander"] details summary span p {
     font-size: 1.15rem;
     font-weight: 800;
 }
+/* Sağ Üst Kayan Buton - Açık Zemin ve Turkuaz Hover */
+.floating-back-link {
+    text-decoration: none !important;
+}
+
+.floating-back-box {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #0F172A !important;
+    border: 1.5px solid #CBD5E1 !important;
+    border-radius: 50px !important;
+    padding: 10px 22px !important;
+    font-weight: 800 !important;
+    font-size: 0.95rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
+    backdrop-filter: blur(8px) !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.floating-back-box span {
+    color: #0F172A !important;
+    transition: color 0.2s ease !important;
+}
+
+/* Üstüne Gelince: Canlı Turkuaz Zemin, Beyaz Yazı ve Hafif Büyüme */
+.floating-back-box:hover {
+    background-color: #0891B2 !important;
+    border-color: #0891B2 !important;
+    box-shadow: 0 8px 24px rgba(8, 145, 178, 0.45) !important;
+    transform: scale(1.05) translateY(-2px) !important;
+}
+
+.floating-back-box:hover span {
+    color: #FFFFFF !important;
+}
 </style>
 """
 st.markdown(TYMM_CSS, unsafe_allow_html=True)
@@ -576,27 +614,11 @@ else:
     secilen_arac = df[df["arac_adi"] == st.session_state.secilen_arac].iloc[0]
     arac_id = int(secilen_arac["arac_id"])
 
-    # SAĞ ÜSTTE HER ZAMAN SAYFAYLA BİRLİKTE SABİT GEZEN (FLOATING) AÇIK RENK BUTON
+  # SAĞ ÜSTTE SABİT GEZEN TURKUAZ HOVER'LI BUTON
     st.markdown("""
     <div style="position: fixed; top: 75px; right: 35px; z-index: 9999999;">
-        <a href="?action=geri" target="_self" style="text-decoration: none;">
-            <div style="
-                background-color: rgba(255, 255, 255, 0.95);
-                color: #0F172A;
-                border: 1.5px solid #CBD5E1;
-                border-radius: 50px;
-                padding: 10px 22px;
-                font-weight: 800;
-                font-size: 0.95rem;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
-                backdrop-filter: blur(8px);
-                cursor: pointer;
-                transition: all 0.2s ease;
-            " onmouseover="this.style.backgroundColor='#0891B2'; this.style.borderColor='#0891B2'; this.style.color='#FFFFFF'; this.style.transform='scale(1.05)';"
-               onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.95)'; this.style.borderColor='#CBD5E1'; this.style.color='#0F172A'; this.style.transform='scale(1)';">
+        <a href="?action=geri" target="_self" class="floating-back-link">
+            <div class="floating-back-box">
                 <span>⬅️</span>
                 <span>Geri Dön</span>
             </div>
