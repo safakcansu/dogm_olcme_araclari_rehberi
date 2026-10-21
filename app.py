@@ -800,6 +800,8 @@ else:
     # SAYFA ALTI YÖNLENDİRİCİ FOOTER NAVİGASYONU (HOVERLI & ŞIK)
     # ============================================================
     st.markdown('<div class="footer-nav-container">', unsafe_allow_html=True)
+    st.write("")
+    st.write("")
     col_alt_sol, col_alt_bosluk, col_alt_sag = st.columns([4, 2, 4])
     
     with col_alt_sol:
@@ -813,5 +815,3 @@ else:
             if st.button(sonraki_etiket, key="nav_alt_sonraki", use_container_width=True):
                 st.session_state.secilen_arac = sonraki_arac_adi
                 st.rerun()
-                
-    st.markdown('</div>', unsafe_allow_html=True)
