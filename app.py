@@ -427,7 +427,7 @@ with st.sidebar:
     if os.path.exists(SOL_PANEL_GORSELI):
         st.image(SOL_PANEL_GORSELI, use_container_width=True)
     
-    st.markdown("### <div style="text-align: center;">**Türkiye Yüzyılı Maarif Modeli**</div>")
+    st.markdown("### **Türkiye Yüzyılı Maarif Modeli**")
     st.caption("Ölçme ve Değerlendirme Rehberi")
     
     if st.button("🏠 Ana Sayfaya Dön", use_container_width=True):
