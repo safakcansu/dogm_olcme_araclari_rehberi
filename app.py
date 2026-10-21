@@ -421,10 +421,13 @@ if "secilen_arac" not in st.session_state:
 if "aktif_gorunum" not in st.session_state:
     st.session_state.aktif_gorunum = "araclar"
 
-# 8. Sol Kenar Çubuğu (Görsel Entegre Edildi)
+
+# 8. Sol Kenar Çubuğu (Görsel Yarı Yarıya Küçültülüp Ortalandı)
 with st.sidebar:
     if os.path.exists(SOL_PANEL_GORSELI):
-        st.image(SOL_PANEL_GORSELI, use_container_width=True)
+        col_sol, col_orta, col_sag = st.columns([1, 2, 1])
+        with col_orta:
+            st.image(SOL_PANEL_GORSELI, use_container_width=True)
     
     st.markdown("### 📘 Maarif Modeli")
     st.caption("Ölçme ve Değerlendirme Rehberi")
