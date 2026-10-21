@@ -363,28 +363,43 @@ div[data-testid="stExpander"] details summary span p {
 }
 
 /* ============================================================
-   ÖNCEKİ / SONRAKİ ARAÇ BUTONLARI (HOVER EFEKTLİ)
+   SAYFA ALTI (FOOTER) ÖNCEKİ / SONRAKİ ARAÇ BUTONLARI (HOVERLI)
    ============================================================ */
-div[data-testid="column"]:has(button[key^="nav_"]) button {
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    border: 1.5px solid #CBD5E1 !important;
-    border-radius: 10px !important;
-    padding: 10px 18px !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
-    transition: all 0.25s ease !important;
+.footer-nav-container {
+    background-color: rgba(255, 255, 255, 0.92);
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 18px 24px;
+    margin-top: 40px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(8px);
 }
-div[data-testid="column"]:has(button[key^="nav_"]) button * {
+
+div[data-testid="column"]:has(button[key^="nav_alt_"]) button {
+    background-color: #FFFFFF !important;
+    border: 1.5px solid #CBD5E1 !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-align: center !important;
+}
+
+div[data-testid="column"]:has(button[key^="nav_alt_"]) button * {
     color: #0F172A !important;
     font-weight: 750 !important;
-    font-size: 0.95rem !important;
+    font-size: 0.98rem !important;
 }
-div[data-testid="column"]:has(button[key^="nav_"]) button:hover {
+
+div[data-testid="column"]:has(button[key^="nav_alt_"]) button:hover {
     background-color: #0891B2 !important;
     border-color: #0891B2 !important;
-    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.35) !important;
-    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(8, 145, 178, 0.35) !important;
+    transform: translateY(-3px) !important;
 }
-div[data-testid="column"]:has(button[key^="nav_"]) button:hover * {
+
+div[data-testid="column"]:has(button[key^="nav_alt_"]) button:hover * {
     color: #FFFFFF !important;
 }
 </style>
@@ -493,8 +508,8 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
     
-    st.markdown("### 📘 Maarif Modeli")
-    st.caption("Ölçme ve Değerlendirme Rehberi")
+    st.markdown("### **TÜRKİYE YÜZYILI MAARİF MODELİ**")
+    st.caption("Ölçme ve Değerlendirme Araçları Rehberi")
     
     if st.button("🏠 Ana Sayfa", use_container_width=True):
         st.session_state.secilen_arac = None
@@ -638,15 +653,28 @@ if st.session_state.secilen_arac is None:
 # 10. GÖRÜNÜM 2: DETAY SAYFASI
 # ----------------------------------------------------
 else:
-    # Tüm araç adlarının sırasını al (Önceki/Sonraki hesaplamak için)
-    tum_araclar = df["arac_adi"].dropna().tolist()
-    secilen_index = tum_araclar.index(st.session_state.secilen_arac)
+    # Tüm araçların sıralı listesini al (ID sırasına göre)
+    df_sirali = df.sort_values(by="arac_id").reset_index(drop=True)
+    tum_arac_adlari = df_sirali["arac_adi"].tolist()
     
-    onceki_arac = tum_araclar[secilen_index - 1] if secilen_index > 0 else None
-    sonraki_arac = tum_araclar[secilen_index + 1] if secilen_index < len(tum_araclar) - 1 else None
-
-    secilen_arac = df[df["arac_adi"] == st.session_state.secilen_arac].iloc[0]
+    secilen_index = tum_arac_adlari.index(st.session_state.secilen_arac)
+    secilen_arac = df_sirali.iloc[secilen_index]
     arac_id = int(secilen_arac["arac_id"])
+
+    # Önceki ve Sonraki Araç Bilgilerini Belirle (ID + Ad)
+    onceki_arac_adi = None
+    onceki_etiket = None
+    if secilen_index > 0:
+        onceki_satir = df_sirali.iloc[secilen_index - 1]
+        onceki_arac_adi = onceki_satir["arac_adi"]
+        onceki_etiket = f"⏮️ {int(onceki_satir['arac_id'])}. {onceki_arac_adi}"
+
+    sonraki_arac_adi = None
+    sonraki_etiket = None
+    if secilen_index < len(df_sirali) - 1:
+        sonraki_satir = df_sirali.iloc[secilen_index + 1]
+        sonraki_arac_adi = sonraki_satir["arac_adi"]
+        sonraki_etiket = f"{int(sonraki_satir['arac_id'])}. {sonraki_arac_adi} ⏭️"
 
     # SAĞ ÜSTTE SABİT GEZEN FLOATING BUTON
     st.markdown("""
@@ -660,9 +688,9 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # Üst Başlık
+    # Üst Başlık (Üstteki kaba butonlar kaldırıldı, temiz ve sade görünüm)
     st.markdown(f"""
-    <div style="margin-bottom: 12px;">
+    <div style="margin-bottom: 20px;">
         <span style="background-color: #CCFBF1; color: #0F766E; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
             {secilen_arac.get('kategori', 'Ölçme Aracı')}
         </span>
@@ -671,19 +699,6 @@ else:
         </h2>
     </div>
     """, unsafe_allow_html=True)
-
-    # ÜST NAVİGASYON (Önceki / Sonraki Araç Butonları)
-    col_nav_sol, col_nav_orta, col_nav_sag = st.columns([2, 5, 2])
-    with col_nav_sol:
-        if onceki_arac:
-            if st.button("⏮️ Önceki Araç", key="nav_ust_onceki", use_container_width=True):
-                st.session_state.secilen_arac = onceki_arac
-                st.rerun()
-    with col_nav_sag:
-        if sonraki_arac:
-            if st.button("Sonraki Araç ⏭️", key="nav_ust_sonraki", use_container_width=True):
-                st.session_state.secilen_arac = sonraki_arac
-                st.rerun()
 
     # 4 Ana Sekme
     tab1, tab2, tab3, tab4 = st.tabs([
@@ -781,16 +796,22 @@ else:
                 
                 st.markdown("<hr style='border: 0; border-top: 1px solid #E2E8F0; margin: 30px 0;'>", unsafe_allow_html=True)
 
-    # ALT NAVİGASYON (Sayfa sonuna gelindiğinde doğrudan bir sonrakine geçiş için)
-    st.write("")
-    col_alt_sol, col_alt_orta, col_alt_sag = st.columns([2, 5, 2])
+    # ============================================================
+    # SAYFA ALTI YÖNLENDİRİCİ FOOTER NAVİGASYONU (HOVERLI & ŞIK)
+    # ============================================================
+    st.markdown('<div class="footer-nav-container">', unsafe_allow_html=True)
+    col_alt_sol, col_alt_bosluk, col_alt_sag = st.columns([4, 2, 4])
+    
     with col_alt_sol:
-        if onceki_arac:
-            if st.button("⏮️ Önceki Araç", key="nav_alt_onceki", use_container_width=True):
-                st.session_state.secilen_arac = onceki_arac
+        if onceki_arac_adi:
+            if st.button(onceki_etiket, key="nav_alt_onceki", use_container_width=True):
+                st.session_state.secilen_arac = onceki_arac_adi
                 st.rerun()
+                
     with col_alt_sag:
-        if sonraki_arac:
-            if st.button("Sonraki Araç ⏭️", key="nav_alt_sonraki", use_container_width=True):
-                st.session_state.secilen_arac = sonraki_arac
+        if sonraki_arac_adi:
+            if st.button(sonraki_etiket, key="nav_alt_sonraki", use_container_width=True):
+                st.session_state.secilen_arac = sonraki_arac_adi
                 st.rerun()
+                
+    st.markdown('</div>', unsafe_allow_html=True)
