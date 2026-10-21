@@ -422,14 +422,12 @@ if "aktif_gorunum" not in st.session_state:
     st.session_state.aktif_gorunum = "araclar"
 
 
-# 8. Sol Kenar Çubuğu (Görsel Yarı Yarıya Küçültülüp Ortalandı)
+# 8. Sol Kenar Çubuğu (Görsel Orijinal Genişliğe Geri Döndürüldü)
 with st.sidebar:
     if os.path.exists(SOL_PANEL_GORSELI):
-        col_sol, col_orta, col_sag = st.columns([1, 2, 1])
-        with col_orta:
-            st.image(SOL_PANEL_GORSELI, use_container_width=True)
+        st.image(SOL_PANEL_GORSELI, use_container_width=True)
     
-    st.markdown("### 📘 Maarif Modeli")
+    st.markdown("### 📘 Türkiye Yüzyılı Maarif Modeli")
     st.caption("Ölçme ve Değerlendirme Rehberi")
     
     if st.button("🏠 Ana Sayfaya Dön", use_container_width=True):
