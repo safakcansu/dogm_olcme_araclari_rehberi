@@ -330,6 +330,39 @@ div[data-testid="stExpander"] details summary span p {
     font-size: 1.15rem;
     font-weight: 800;
 }
+
+/* Sağ Alt Köşede Sabit Kalan (Floating) Geri Dön Butonu */
+div[data-testid="stButton"]:has(button[key="btn_sabit_geri"]),
+.element-container:has(button[key="btn_sabit_geri"]) {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 35px !important;
+    z-index: 999999 !important;
+    width: auto !important;
+}
+
+button[key="btn_sabit_geri"] {
+    background-color: #0F172A !important;
+    color: #FFFFFF !important;
+    border: 2px solid #0891B2 !important;
+    border-radius: 50px !important;
+    padding: 12px 26px !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.45) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+button[key="btn_sabit_geri"]:hover {
+    background-color: #C91D24 !important;
+    border-color: #C91D24 !important;
+    box-shadow: 0 10px 30px rgba(201, 29, 36, 0.5) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+}
+
+button[key="btn_sabit_geri"] * {
+    color: #FFFFFF !important;
+}
 </style>
 """
 st.markdown(TYMM_CSS, unsafe_allow_html=True)
@@ -576,26 +609,31 @@ if st.session_state.secilen_arac is None:
 # ----------------------------------------------------
 # 10. GÖRÜNÜM 2: DETAY SAYFASI
 # ----------------------------------------------------
+# ----------------------------------------------------
+# 10. GÖRÜNÜM 2: DETAY SAYFASI
+# ----------------------------------------------------
 else:
     secilen_arac = df[df["arac_adi"] == st.session_state.secilen_arac].iloc[0]
     arac_id = int(secilen_arac["arac_id"])
 
-    col_baslik, col_geri = st.columns([5, 1], vertical_alignment="center")
-    with col_baslik:
-        st.markdown(f"""
-        <div style="margin-bottom: 10px;">
-            <span style="background-color: #CCFBF1; color: #0F766E; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
-                {secilen_arac.get('kategori', 'Ölçme Aracı')}
-            </span>
-            <h2 style="color: #0F172A; font-size: 1.85rem; font-weight: 800; margin-top: 8px; margin-bottom: 0;">
-                {arac_id}. {secilen_arac['arac_adi']}
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_geri:
-        if st.button("⬅️ Geri Dön", use_container_width=True):
-            st.session_state.secilen_arac = None
-            st.rerun()
+    # Üst Başlık
+    st.markdown(f"""
+    <div style="margin-bottom: 12px;">
+        <span style="background-color: #CCFBF1; color: #0F766E; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+            {secilen_arac.get('kategori', 'Ölçme Aracı')}
+        </span>
+        <h2 style="color: #0F172A; font-size: 1.85rem; font-weight: 800; margin-top: 8px; margin-bottom: 0;">
+            {arac_id}. {secilen_arac['arac_adi']}
+        </h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Ekranda Sayfayla Birlikte Kayan Sabit Geri Dön Butonu
+    if st.button("⬅️ Geri Dön", key="btn_sabit_geri"):
+        st.session_state.secilen_arac = None
+        st.rerun()
+
+    # 4 Ana Sekme...
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "**1. Tanıtım**",
