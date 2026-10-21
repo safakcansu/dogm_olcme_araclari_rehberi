@@ -577,17 +577,18 @@ else:
     arac_id = int(secilen_arac["arac_id"])
 
     # SAĞ ÜSTTE HER ZAMAN SAYFAYLA BİRLİKTE SABİT GEZEN (FLOATING) BUTON
+    # SAĞ ÜSTTE HER ZAMAN SAYFAYLA BİRLİKTE SABİT GEZEN (FLOATING) BUTON
     st.markdown("""
-    <div style="position: fixed; top: 25px; right: 35px; z-index: 9999999;">
+    <div style="position: fixed; top: 75px; right: 35px; z-index: 9999999;">
         <a href="?action=geri" target="_self" style="text-decoration: none;">
             <div style="
                 background-color: #0F172A;
                 color: #FFFFFF;
                 border: 2px solid #0891B2;
                 border-radius: 50px;
-                padding: 12px 24px;
+                padding: 10px 22px;
                 font-weight: 800;
-                font-size: 0.98rem;
+                font-size: 0.95rem;
                 display: flex;
                 align-items: center;
                 gap: 8px;
