@@ -43,12 +43,12 @@ def arka_plan_css_olustur(gorsel_yolu):
 
 st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
 
-# 3. Webfon Uyumlu Açık Tonlu CSS Teması + Kesin Sabit Geri Butonu Kuralı
+# 3. Webfon Uyumlu Kurumsal CSS
 TYMM_CSS = """
 <style>
-/* Sol Kenar Çubuğu (Açık ve Fona Uyumlu) */
+/* Sol Kenar Çubuğu */
 section[data-testid="stSidebar"] {
-    background-color: rgba(241, 245, 249, 0.92) !important;
+    background-color: rgba(241, 245, 249, 0.95) !important;
     border-right: 1px solid #CBD5E1 !important;
     backdrop-filter: blur(10px) !important;
 }
@@ -84,12 +84,6 @@ section[data-testid="stSidebar"] button:hover {
 }
 section[data-testid="stSidebar"] button:hover * {
     color: #FFFFFF !important;
-}
-
-section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    background-color: #FFFFFF !important;
-    border-color: #CBD5E1 !important;
-    color: #0F172A !important;
 }
 
 /* Kurumsal Banner */
@@ -197,7 +191,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     div[data-testid="stButton"] > button {
         background-color: #0F172A !important;
         border: 1px solid #334155 !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
     }
     div[data-testid="stButton"] > button * {
         color: #FFFFFF !important;
@@ -209,11 +202,9 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     div[data-testid="stButton"] > button:hover * {
         color: #FFFFFF !important;
     }
-
     div[data-testid="stTabs"] [data-baseweb="tab"] {
         background-color: #0F172A !important;
         border: 1px solid #334155 !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
     }
     div[data-testid="stTabs"] [data-baseweb="tab"] * {
         color: #FFFFFF !important;
@@ -330,38 +321,6 @@ div[data-testid="stExpander"] details summary span p {
     font-size: 1.15rem;
     font-weight: 800;
 }
-
-/* ============================================================
-   EKRANDA KESİN OLARAK SABİT GEZEN (FLOATING) GERİ DÖN BUTONU
-   ============================================================ */
-.floating-back-btn {
-    position: fixed !important;
-    bottom: 35px !important;
-    right: 40px !important;
-    z-index: 99999999 !important;
-}
-
-.floating-back-btn button {
-    background-color: #0F172A !important;
-    border: 2px solid #0891B2 !important;
-    border-radius: 50px !important;
-    padding: 14px 26px !important;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.5) !important;
-    transition: all 0.25s ease !important;
-}
-
-.floating-back-btn button * {
-    color: #FFFFFF !important;
-    font-size: 1.05rem !important;
-    font-weight: 800 !important;
-}
-
-.floating-back-btn button:hover {
-    background-color: #0891B2 !important;
-    border-color: #0891B2 !important;
-    transform: scale(1.06) translateY(-3px) !important;
-    box-shadow: 0 12px 28px rgba(8, 145, 178, 0.6) !important;
-}
 </style>
 """
 st.markdown(TYMM_CSS, unsafe_allow_html=True)
@@ -446,14 +405,20 @@ if df is None:
     st.error(f"`{EXCEL_YOLU}` dosyası bulunamadı! Lütfen Excel dosyasını `data` klasörüne ekleyin.")
     st.stop()
 
-# 7. Oturum Durumu
+# 7. Oturum Durumu ve Query Parametre Kontrolü
 if "secilen_arac" not in st.session_state:
     st.session_state.secilen_arac = None
 
 if "aktif_gorunum" not in st.session_state:
     st.session_state.aktif_gorunum = "araclar"
 
-# 8. Sol Kenar Çubuğu (Görsel %15 Büyütüldü)
+# Sağ üstteki sabit butona tıklandığında URL üzerinden geri dönüş tetikleme
+if "action" in st.query_params and st.query_params["action"] == "geri":
+    st.session_state.secilen_arac = None
+    st.query_params.clear()
+    st.rerun()
+
+# 8. Sol Kenar Çubuğu
 with st.sidebar:
     if os.path.exists(SOL_PANEL_GORSELI):
         st.markdown(f"""
@@ -466,7 +431,7 @@ with st.sidebar:
     st.markdown("### 📘 Maarif Modeli")
     st.caption("Ölçme ve Değerlendirme Rehberi")
     
-    if st.button("🏠 Ana Sayfaya Dön", use_container_width=True):
+    if st.button("🏠 Ana Sayfa", use_container_width=True):
         st.session_state.secilen_arac = None
         st.session_state.aktif_gorunum = "araclar"
         st.rerun()
@@ -611,6 +576,33 @@ else:
     secilen_arac = df[df["arac_adi"] == st.session_state.secilen_arac].iloc[0]
     arac_id = int(secilen_arac["arac_id"])
 
+    # SAĞ ÜSTTE HER ZAMAN SAYFAYLA BİRLİKTE SABİT GEZEN (FLOATING) BUTON
+    st.markdown("""
+    <div style="position: fixed; top: 25px; right: 35px; z-index: 9999999;">
+        <a href="?action=geri" target="_self" style="text-decoration: none;">
+            <div style="
+                background-color: #0F172A;
+                color: #FFFFFF;
+                border: 2px solid #0891B2;
+                border-radius: 50px;
+                padding: 12px 24px;
+                font-weight: 800;
+                font-size: 0.98rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 8px 24px rgba(15, 23, 42, 0.4);
+                cursor: pointer;
+                transition: all 0.2s ease;
+            " onmouseover="this.style.backgroundColor='#0891B2'; this.style.transform='scale(1.05)';"
+               onmouseout="this.style.backgroundColor='#0F172A'; this.style.transform='scale(1)';">
+                <span>⬅️</span>
+                <span>Geri Dön</span>
+            </div>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
     # Üst Başlık
     st.markdown(f"""
     <div style="margin-bottom: 12px;">
@@ -622,14 +614,6 @@ else:
         </h2>
     </div>
     """, unsafe_allow_html=True)
-
-    # EKRANDA HER ZAMAN SABİT GEZEN FLOATING BUTON KAPSAYICISI
-    with st.container():
-        st.markdown('<div class="floating-back-btn">', unsafe_allow_html=True)
-        if st.button("⬅️ Geri Dön", key="btn_floating_back"):
-            st.session_state.secilen_arac = None
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # 4 Ana Sekme
     tab1, tab2, tab3, tab4 = st.tabs([
