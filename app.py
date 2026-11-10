@@ -610,9 +610,12 @@ if st.session_state.secilen_arac is None:
         st.markdown(takdim_icerik, unsafe_allow_html=True)
 
     # 1.A) BECERİDEN ARACA ULAŞMA MODU
+    # --------------------------------------------------------------------------
+    # 1.A) BECERİDEN ARACA ULAŞMA MODU (Süreç Süreç Görünüm)
+    # --------------------------------------------------------------------------
     if st.session_state.aktif_gorunum == "beceriler":
         st.markdown('<div class="tymm-section-title">🎯 Becerilere Göre Ölçme Aracı Önerileri</div>', unsafe_allow_html=True)
-        st.markdown("Öğretim programında yer alan beceriyi seçerek, bu çıktıyı ölçmede kullanılabilecek önerilen araçları listeleyebilirsiniz.")
+        st.markdown("Öğretim programında yer alan beceriyi seçerek, bu becerinin **hangi süreç bileşeni için hangi ölçme araçlarının önerildiğini** süreç bazında inceleyebilirsiniz.")
         
         st.warning("""
         ⚠️ **Önemli Not ve Sınırlılık:**  
@@ -624,23 +627,75 @@ if st.session_state.secilen_arac is None:
         if df_beceriler is None or "onerilen_beceri" not in df_beceriler.columns:
             st.info("ℹ️ Beceri eşleme verisi bulunamadı.")
         else:
+            # 1. Becerileri benzersiz listele (Kod ve Adına göre)
             gecerli_beceri_df = df_beceriler[df_beceriler["beceri_kodu"] != "-"].copy()
-            beceri_listesi = ["--- Bir Beceri / Süreç Bileşeni Seçiniz ---"] + sorted(gecerli_beceri_df["onerilen_beceri"].dropna().unique().tolist())
+            beceri_listesi = ["--- Bir Beceri Seçiniz ---"] + sorted(gecerli_beceri_df["onerilen_beceri"].dropna().unique().tolist())
             secilen_beceri = st.selectbox("İncelemek istediğiniz beceriyi seçiniz:", beceri_listesi)
             
-            if secilen_beceri != "--- Bir Beceri / Süreç Bileşeni Seçiniz ---":
-                eslesen_satirlar = df_beceriler[df_beceriler["onerilen_beceri"] == secilen_beceri]
-                eslesen_arac_idleri = eslesen_satirlar["arac_id"].dropna().unique().tolist()
-                onerilen_araclar_df = df[df["arac_id"].isin(eslesen_arac_idleri)].sort_values("arac_id")
+            if secilen_beceri != "--- Bir Beceri Seçiniz ---":
+                # Seçilen beceriye ait tüm kayıtları filtrele
+                eslesen_beceri_df = df_beceriler[df_beceriler["onerilen_beceri"] == secilen_beceri].copy()
                 
-                st.markdown(f"##### Bu Beceriyi Ölçmek İçin Önerilen Araçlar ({len(onerilen_araclar_df)} Araç)")
-                cols = st.columns(3)
-                for idx, (_, row) in enumerate(onerilen_araclar_df.iterrows()):
-                    col_target = cols[idx % 3]
-                    etiket = f"{int(row['arac_id'])}. {row['arac_adi']}"
-                    if col_target.button(etiket, key=f"beceri_btn_{row['arac_id']}", use_container_width=True):
-                        st.session_state.secilen_arac = row["arac_adi"]
-                        st.rerun()
+                # Bu beceriyle ilişkili toplam benzersiz araç sayısı
+                toplam_arac_sayisi = eslesen_beceri_df["arac_id"].nunique()
+                
+                st.markdown(f"""
+                <div class="tymm-card" style="margin-bottom: 20px; border-left: 6px solid #0891B2;">
+                    <div class="tymm-card-title">Seçilen Beceri: {secilen_beceri}</div>
+                    <p style="margin: 0; color: #475569;">
+                        Bu beceri ve alt süreçleri, toplam <strong>{toplam_arac_sayisi} farklı ölçme aracında</strong> önerilmektedir. 
+                        Aşağıda hangi süreç bileşeni için hangi araçların kullanılabileceği listelenmiştir:
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # 2. Süreç Bileşenlerine Göre Gruplama
+                # 'Tüm süreç bileşenleri' olanları en üste alacak şekilde sırala
+                surec_gruplari = eslesen_beceri_df.groupby("surec_bileseni")
+                
+                # Süreçleri düzenli listelemek için sıralı anahtarlar
+                sorted_surecler = sorted(
+                    surec_gruplari.groups.keys(),
+                    key=lambda x: (0 if "Tüm süreç" in str(x) else 1, str(x))
+                )
+                
+                for surec in sorted_surecler:
+                    grup_df = surec_gruplari.get_group(surec)
+                    # O süreç bileşenine ait araçları tekilleştir
+                    arac_alt_listesi = grup_df[["arac_id", "arac_adi"]].drop_duplicates().sort_values("arac_id")
+                    
+                    # Süreç Kartı Başlığı
+                    if "Tüm süreç" in str(surec):
+                        surec_baslik = "⭐ Becerinin Tamamı (Tüm Süreç Bileşenleri İçin Önerilen Araçlar)"
+                        rozet_renk = "#0369A1"
+                        rozet_bg = "#E0F2FE"
+                    else:
+                        surec_baslik = f"🔹 {surec}"
+                        rozet_renk = "#0F766E"
+                        rozet_bg = "#CCFBF1"
+                    
+                    st.markdown(f"""
+                    <div style="background-color: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-radius: 12px; padding: 16px 20px; margin-top: 14px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 800; font-size: 1.05rem; color: #0F172A;">{surec_baslik}</span>
+                            <span style="background-color: {rozet_bg}; color: {rozet_renk}; font-size: 0.85rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;">
+                                {len(arac_alt_listesi)} Araç
+                            </span>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Bu süreç bileşeni için önerilen araçların butonları (3 sütun)
+                    cols = st.columns(3)
+                    for idx, (_, row) in enumerate(arac_alt_listesi.iterrows()):
+                        col_target = cols[idx % 3]
+                        arac_no = int(row['arac_id'])
+                        etiket = f"{arac_no}. {row['arac_adi']}"
+                        
+                        # Butona tıklandığında doğrudan o aracın detay sayfasına git
+                        if col_target.button(etiket, key=f"btn_sb_{arac_no}_{hash(surec)}_{idx}", use_container_width=True):
+                            st.session_state.secilen_arac = row["arac_adi"]
+                            st.rerun()
 
     # 1.B) MEVCUT 4 KATEGORİLİ LİSTE MODU
     else:
