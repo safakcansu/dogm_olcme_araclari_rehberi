@@ -15,14 +15,24 @@ st.set_page_config(
 )
 
 # ============================================================
-# 2. Dosya Yolları
+# 2. Dosya Yolları (Otomatik Tespit)
 # ============================================================
 GORSEL_KLASORU = os.path.join("assets", "images")
 FON_GORSELI_PNG = os.path.join(GORSEL_KLASORU, "webfon.png")
 FON_GORSELI_JPG = os.path.join(GORSEL_KLASORU, "webfon.jpg")
 SOL_PANEL_GORSELI = os.path.join(GORSEL_KLASORU, "solpanel.png")
-EXCEL_YOLU = os.path.join("data", "araclar.xlsx")
 LOGO_YOLU = os.path.join(GORSEL_KLASORU, "DOGM_Logo_Yan_.png")
+
+# Excel dosyasını otomatik bulma (data klasörü veya ana dizin)
+olasi_excel_yollari = [
+    os.path.join("data", "araclar.xlsx"),
+    os.path.join("data", "araclar_3.xlsx"),
+    os.path.join("data", "araclar_2.xlsx"),
+    "araclar.xlsx",
+    "araclar_3.xlsx",
+    "araclar_2.xlsx"
+]
+EXCEL_YOLU = next((yol for yol in olasi_excel_yollari if os.path.exists(yol)), os.path.join("data", "araclar.xlsx"))
 
 # Arka Plan Görselini Belirleme ve Base64 Formatına Çevirme
 fon_yolu = FON_GORSELI_PNG if os.path.exists(FON_GORSELI_PNG) else FON_GORSELI_JPG
@@ -350,48 +360,70 @@ st.markdown(TYMM_CSS, unsafe_allow_html=True)
 # 4. Süreç Bileşenlerini Biçimlendiren Fonksiyon
 # ============================================================
 def surec_bilesenlerini_bicimlendir(metin):
-    if not metin or str(metin) == "nan":
+    if not metin or str(metin).strip() in ["nan", "None", "-", ""]:
         return "<p style='color: #64748b; font-size: 1rem;'>Bu örnek için özel bir alt süreç bileşeni belirtilmemiştir.</p>"
     
     metin = str(metin).strip()
-    if "|" in metin:
-        parcalar = [p.strip() for p in metin.split("|") if p.strip()]
-        html_cikti = "<ul style='margin: 0; padding-left: 5px; list-style-type: none;'>"
-        for madde in parcalar:
+    parcalar = [p.strip() for p in metin.split("|") if p.strip()]
+    
+    html_cikti = "<ul style='margin: 0; padding-left: 5px; list-style-type: none;'>"
+    for madde in parcalar:
+        m_etiket = re.match(r'^([a-zçğıöşü\d]{1,2}\)|[•●▪\-])\s*(.*)$', madde, re.IGNORECASE)
+        if m_etiket:
+            harf = m_etiket.group(1)
+            icerik = m_etiket.group(2)
+            html_cikti += f"""
+            <li style='margin-bottom: 8px; color: #334155; font-size: 1rem; line-height: 1.6; display: flex; align-items: flex-start;'>
+                <span style='margin-right: 8px; color: #EA580C; font-weight: 800;'>▪</span>
+                <span><strong style='color: #0F172A;'>{harf}</strong> {icerik}</span>
+            </li>
+            """
+        else:
             html_cikti += f"""
             <li style='margin-bottom: 8px; color: #334155; font-size: 1rem; line-height: 1.6; display: flex; align-items: flex-start;'>
                 <span style='margin-right: 8px; color: #EA580C; font-weight: 800;'>▪</span>
                 <span>{madde}</span>
             </li>
             """
-        html_cikti += "</ul>"
-        return html_cikti
-    
-    return f"<p style='margin:0; font-size:1.05rem; line-height:1.7; color:#1E293B;'>{metin}</p>"
+    html_cikti += "</ul>"
+    return html_cikti
 
 # ============================================================
-# 5. Görsel Tarayıcı
+# 5. Görsel Arama Fonksiyonu (ornek30_1_2.png, ornek27_1_1 vb.)
 # ============================================================
-def tum_ornekleri_bul(arac_id):
-    uzantilar = [".png", ".jpg", ".jpeg", ".PNG", ".JPG"]
-    bulunan_ornekler = []
-    ornek_no = 1
-    while True:
-        bulundu = False
-        for ext in uzantilar:
-            dosya_adi = f"ornek{arac_id}_{ornek_no}{ext}"
-            yol = os.path.join(GORSEL_KLASORU, dosya_adi)
+def gorsel_yolu_bul(arac_id, gorsel_adi, ornek_no_str, gorsel_klasoru=GORSEL_KLASORU):
+    if not os.path.exists(gorsel_klasoru):
+        return None, None
+        
+    # 1. Excel'deki dosya adıyla doğrudan eşleştirme
+    if gorsel_adi and str(gorsel_adi) not in ["nan", "-", "None"]:
+        temiz_ad = re.sub(r'\(.*?\)', '', str(gorsel_adi)).strip()
+        yol = os.path.join(gorsel_klasoru, temiz_ad)
+        if os.path.exists(yol):
+            return yol, temiz_ad
+            
+    # 2. Örnek No üzerinden arama (örn: "Örnek 1" -> 1 veya "Örnek 1.2" -> 1_2)
+    nums = re.findall(r'\d+', str(ornek_no_str))
+    if nums:
+        o_no = nums[0]
+        alt_no = nums[1] if len(nums) > 1 else None
+        
+        candidates = []
+        if alt_no:
+            for ext in [".png", ".jpg", ".jpeg", ".PNG", ".JPG", ".JPEG"]:
+                candidates.append(f"ornek{arac_id}_{o_no}_{alt_no}{ext}")
+        for ext in [".png", ".jpg", ".jpeg", ".PNG", ".JPG", ".JPEG"]:
+            candidates.append(f"ornek{arac_id}_{o_no}{ext}")
+            
+        for c in candidates:
+            yol = os.path.join(gorsel_klasoru, c)
             if os.path.exists(yol):
-                bulunan_ornekler.append((ornek_no, yol, dosya_adi))
-                bulundu = True
-                break
-        if not bulundu:
-            break
-        ornek_no += 1
-    return bulunan_ornekler
+                return yol, c
+                
+    return None, None
 
 # ============================================================
-# 6. Excel Verilerini Otomatik Yükleme (49 Araç + Beceri + Örnekler)
+# 6. Excel Verilerini Otomatik Değişim Takibiyle Yükleme
 # ============================================================
 @st.cache_data
 def verileri_yukle(dosya_yolu, dosya_zamani):
@@ -401,30 +433,26 @@ def verileri_yukle(dosya_yolu, dosya_zamani):
         xls = pd.ExcelFile(dosya_yolu)
         
         # 1. Sayfa: Araç Listesi
-        sheet_arac = "Arac_Listesi" if "Arac_Listesi" in xls.sheet_names else xls.sheet_names[1] if len(xls.sheet_names) > 1 else xls.sheet_names[0]
+        sheet_arac = "Arac_Listesi" if "Arac_Listesi" in xls.sheet_names else xls.sheet_names[0]
         df_araclar = pd.read_excel(xls, sheet_name=sheet_arac)
-        
-        # Kolon standartlaştırma
         df_araclar.columns = [c.strip() for c in df_araclar.columns]
-        rename_dict = {}
-        for c in df_araclar.columns:
-            if "No" in c: rename_dict[c] = "arac_id"
-            elif "Adı" in c or "Adi" in c: rename_dict[c] = "arac_adi"
-            elif "Sayfa" in c: rename_dict[c] = "sayfa_araligi"
-            elif "Tanım" in c or "Tanim" in c: rename_dict[c] = "tanitim"
-            elif "İlke" in c or "Ilke" in c or "Dikkat" in c: rename_dict[c] = "dikkat_edilecekler"
-        df_araclar = df_araclar.rename(columns=rename_dict)
+        
+        rename_a = {
+            'Araç No': 'arac_id',
+            'Ölçme Aracının Adı': 'arac_adi',
+            'Kategori': 'kategori',
+            'Tanımı ve Kapsamı': 'tanitim',
+            'Hazırlık ve Yazım Sürecinde Dikkat Edilecek İlkeler': 'dikkat_edilecekler'
+        }
+        df_araclar = df_araclar.rename(columns=rename_a)
         df_araclar["arac_id"] = pd.to_numeric(df_araclar["arac_id"], errors="coerce")
-
-        # Kategori ataması (Eğer sütun yoksa ID aralığına göre dinamik belirle)
+        
+        # Kategori kontrolü
         if "kategori" not in df_araclar.columns:
             def kategori_belirle(row_id):
-                if row_id in [39, 40, 41]:
-                    return "Puanlama Araçları"
-                elif row_id in [42, 43, 44, 45]:
-                    return "Değerlendirme Formları"
-                elif row_id in [46, 47, 48, 49]:
-                    return "Hızlı Değerlendirme Teknikleri"
+                if row_id in [39, 40, 41]: return "Puanlama Araçları"
+                elif row_id in [42, 43, 44, 45]: return "Değerlendirme Formları"
+                elif row_id in [46, 47, 48, 49]: return "Hızlı Değerlendirme Teknikleri"
                 return "Ölçme ve Değerlendirme Araçları"
             df_araclar["kategori"] = df_araclar["arac_id"].apply(kategori_belirle)
 
@@ -432,18 +460,19 @@ def verileri_yukle(dosya_yolu, dosya_zamani):
         df_beceriler = None
         if "Beceri_Matrisi" in xls.sheet_names:
             df_beceriler = pd.read_excel(xls, sheet_name="Beceri_Matrisi")
-        elif len(xls.sheet_names) > 2:
-            df_beceriler = pd.read_excel(xls, sheet_name=2)
+        elif len(xls.sheet_names) > 1:
+            df_beceriler = pd.read_excel(xls, sheet_name=1)
             
         if df_beceriler is not None:
             df_beceriler.columns = [c.strip() for c in df_beceriler.columns]
-            rename_b = {}
-            for c in df_beceriler.columns:
-                if "No" in c: rename_b[c] = "arac_id"
-                elif "Adı" in c or "Adi" in c: rename_b[c] = "arac_adi"
-                elif "Kodu" in c: rename_b[c] = "beceri_kodu"
-                elif "Önerilen" in c or "Onerilen" in c: rename_b[c] = "onerilen_beceri"
-                elif "Süreç" in c or "Surec" in c: rename_b[c] = "surec_bileseni"
+            rename_b = {
+                'Araç No': 'arac_id',
+                'Ölçme Aracının Adı': 'arac_adi',
+                'Beceri Kodu': 'beceri_kodu',
+                'Önerilen Beceri': 'onerilen_beceri',
+                'Süreç Bileşenleri': 'surec_bileseni',
+                'Açıklama / Soru Kalıbı': 'soru_kalibi'
+            }
             df_beceriler = df_beceriler.rename(columns=rename_b)
             df_beceriler["arac_id"] = pd.to_numeric(df_beceriler["arac_id"], errors="coerce")
 
@@ -451,30 +480,32 @@ def verileri_yukle(dosya_yolu, dosya_zamani):
         df_ornekler = None
         if "Ornek_Uygulamalar" in xls.sheet_names:
             df_ornekler = pd.read_excel(xls, sheet_name="Ornek_Uygulamalar")
-        elif len(xls.sheet_names) > 3:
-            df_ornekler = pd.read_excel(xls, sheet_name=3)
-
+        elif len(xls.sheet_names) > 2:
+            df_ornekler = pd.read_excel(xls, sheet_name=2)
+            
         if df_ornekler is not None:
             df_ornekler.columns = [c.strip() for c in df_ornekler.columns]
-            rename_o = {}
-            for c in df_ornekler.columns:
-                if "No" in c and "Araç" in c: rename_o[c] = "arac_id"
-                elif "Örnek No" in c or "Ornek No" in c: rename_o[c] = "ornek_no"
-                elif "Öğrenme" in c or "Ogrenme" in c or "Başlığı" in c: rename_o[c] = "ogrenme_ciktisi"
-                elif "Detay" in c or "Notu" in c or "Süreç" in c: rename_o[c] = "surec_detay"
+            rename_o = {
+                'Araç No': 'arac_id',
+                'Ölçme Aracının Adı': 'arac_adi',
+                'Örnek No': 'ornek_no',
+                'Görsel Dosya Adı': 'gorsel_dosya_adi',
+                'Öğrenme Çıktısı / Program Odak Noktası': 'ogrenme_ciktisi',
+                'Süreç Bileşenleri ve Uygulama Notu': 'surec_detay'
+            }
             df_ornekler = df_ornekler.rename(columns=rename_o)
             df_ornekler["arac_id"] = pd.to_numeric(df_ornekler["arac_id"], errors="coerce")
 
         return df_araclar, df_beceriler, df_ornekler
     except Exception as e:
-        st.error(f"Excel okunurken hata oluştu: {e}")
+        st.error(f"Excel dosyası yüklenirken hata oluştu: {e}")
         return None, None, None
 
 dosya_zamani = os.path.getmtime(EXCEL_YOLU) if os.path.exists(EXCEL_YOLU) else 0
 df, df_beceriler, df_ornekler = verileri_yukle(EXCEL_YOLU, dosya_zamani)
 
 if df is None:
-    st.error(f"`{EXCEL_YOLU}` dosyası bulunamadı! Lütfen Excel dosyasını `data` klasörüne ekleyin.")
+    st.error(f"`{EXCEL_YOLU}` dosyası bulunamadı! Lütfen Excel dosyasını `data` klasörüne ekleyiniz.")
     st.stop()
 
 # ============================================================
@@ -581,7 +612,7 @@ if st.session_state.secilen_arac is None:
     # 1.A) BECERİDEN ARACA ULAŞMA MODU
     if st.session_state.aktif_gorunum == "beceriler":
         st.markdown('<div class="tymm-section-title">🎯 Becerilere Göre Ölçme Aracı Önerileri</div>', unsafe_allow_html=True)
-        st.markdown("Öğretim programında yer alan beceriyi seçerek, bu beceriyi ölçmede kullanılabilecek önerilen araçları listeleyebilirsiniz.")
+        st.markdown("Öğretim programında yer alan beceriyi seçerek, bu çıktıyı ölçmede kullanılabilecek önerilen araçları listeleyebilirsiniz.")
         
         st.warning("""
         ⚠️ **Önemli Not ve Sınırlılık:**  
@@ -593,7 +624,6 @@ if st.session_state.secilen_arac is None:
         if df_beceriler is None or "onerilen_beceri" not in df_beceriler.columns:
             st.info("ℹ️ Beceri eşleme verisi bulunamadı.")
         else:
-            # Filtre için geçerli beceri listesi
             gecerli_beceri_df = df_beceriler[df_beceriler["beceri_kodu"] != "-"].copy()
             beceri_listesi = ["--- Bir Beceri / Süreç Bileşeni Seçiniz ---"] + sorted(gecerli_beceri_df["onerilen_beceri"].dropna().unique().tolist())
             secilen_beceri = st.selectbox("İncelemek istediğiniz beceriyi seçiniz:", beceri_listesi)
@@ -637,7 +667,6 @@ if st.session_state.secilen_arac is None:
 # 10. GÖRÜNÜM 2: DETAY SAYFASI
 # ============================================================
 else:
-    # Tüm araçların sıralı listesini al (ID sırasına göre)
     df_sirali = df.sort_values(by="arac_id").reset_index(drop=True)
     tum_arac_adlari = df_sirali["arac_adi"].tolist()
     
@@ -672,14 +701,11 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # Üst Başlık
+    # Üst Başlık (Sayfa numarası rozeti kaldırıldı)
     st.markdown(f"""
     <div style="margin-bottom: 20px;">
         <span style="background-color: #CCFBF1; color: #0F766E; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
             {secilen_arac.get('kategori', 'Ölçme Aracı')}
-        </span>
-        <span style="background-color: #E0F2FE; color: #0369A1; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; margin-left: 6px;">
-            Sayfa: {secilen_arac.get('sayfa_araligi', '')}
         </span>
         <h2 style="color: #0F172A; font-size: 1.85rem; font-weight: 800; margin-top: 8px; margin-bottom: 0;">
             {arac_id}. {secilen_arac['arac_adi']}
@@ -687,11 +713,11 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # 4 Ana Sekme
+    # 4 Ana Sekme (Önerilen Beceriler başlığı sadeleştirildi)
     tab1, tab2, tab3, tab4 = st.tabs([
         "**1. Tanıtım & Kapsam**",
         "**2. Hazırlarken Dikkat Edilecek Hususlar**",
-        "**3. Önerilen Beceriler (2 Sütun)**",
+        "**3. Önerilen Beceriler**",
         "**4. Örnek & Çıktı Eşleşmesi**"
     ])
 
@@ -727,7 +753,7 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-    # 3. Önerilen Beceriler (2 Sütunlu Temiz Tablo)
+    # 3. Önerilen Beceriler
     with tab3:
         if df_beceriler is not None:
             arac_beceri_df = df_beceriler[df_beceriler["arac_id"] == arac_id].copy()
@@ -750,68 +776,56 @@ else:
     # 4. Örnek Görseller ve Çıktı Eşleşmesi
     with tab4:
         st.write("")
-        ornekler_listesi = tum_ornekleri_bul(arac_id)
-        
-        # Bu araca ait exceldeki örnekler
         ilgili_ornekler_df = pd.DataFrame()
         if df_ornekler is not None:
             ilgili_ornekler_df = df_ornekler[df_ornekler["arac_id"] == arac_id].copy()
         
-        # Görsel varsa görsellerle birlikte göster
-        if ornekler_listesi:
-            for o_no, gorsel_yolu_bulunan, dosya_adi in ornekler_listesi:
-                # Eşleşen öğrenme çıktısını bul
-                cikti_metni = ""
-                surec_metni = ""
-                if not ilgili_ornekler_df.empty and len(ilgili_ornekler_df) >= o_no:
-                    satir_ornek = ilgili_ornekler_df.iloc[o_no - 1]
-                    cikti_metni = satir_ornek.get("ogrenme_ciktisi", "")
-                    surec_metni = satir_ornek.get("surec_detay", "")
-
-                bicimli_cikti = surec_bilesenlerini_bicimlendir(surec_metni)
+        if not ilgili_ornekler_df.empty:
+            for _, r_orn in ilgili_ornekler_df.iterrows():
+                o_no_str = str(r_orn.get("ornek_no", "Örnek"))
+                dosya_adi = str(r_orn.get("gorsel_dosya_adi", ""))
+                cikti_b = str(r_orn.get("ogrenme_ciktisi", ""))
+                surec_d = str(r_orn.get("surec_detay", ""))
                 
-                st.markdown(f"<h4 style='color:#0F172A; font-weight:800; margin-top:20px;'>Örnek {arac_id}.{o_no}</h4>", unsafe_allow_html=True)
-                col_img, col_info = st.columns([3, 2], gap="large")
+                gorsel_yolu, bulunan_ad = gorsel_yolu_bul(arac_id, dosya_adi, o_no_str)
+                bicimli_cikti = surec_bilesenlerini_bicimlendir(surec_d)
                 
-                with col_img:
-                    st.markdown('<div class="tymm-img-container">', unsafe_allow_html=True)
-                    st.image(gorsel_yolu_bulunan, caption=f"Örnek {arac_id}.{o_no} ({dosya_adi})", use_container_width=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown(f"<h4 style='color:#0F172A; font-weight:800; margin-top:20px;'>{o_no_str}</h4>", unsafe_allow_html=True)
                 
-                with col_info:
+                if gorsel_yolu and os.path.exists(gorsel_yolu):
+                    col_img, col_info = st.columns([3, 2], gap="large")
+                    with col_img:
+                        st.markdown('<div class="tymm-img-container">', unsafe_allow_html=True)
+                        st.image(gorsel_yolu, caption=f"{o_no_str} ({bulunan_ad})", use_container_width=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    with col_info:
+                        st.markdown(f"""
+                        <div class="tymm-cikti-box">
+                            <h5>Örneğe Ait Öğrenme Çıktısı / Süreç Bileşeni</h5>
+                            <p style="font-weight:700; color:#0F172A; margin-bottom:8px;">{cikti_b}</p>
+                            {bicimli_cikti}
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
                     st.markdown(f"""
                     <div class="tymm-cikti-box">
                         <h5>Örneğe Ait Öğrenme Çıktısı / Süreç Bileşeni</h5>
-                        <p style="font-weight:700; color:#0F172A; margin-bottom:8px;">{cikti_metni}</p>
+                        <p style="font-weight:700; color:#0F172A; margin-bottom:8px;">{cikti_b}</p>
                         {bicimli_cikti}
                     </div>
                     """, unsafe_allow_html=True)
                 
                 st.markdown("<hr style='border: 0; border-top: 1px solid #E2E8F0; margin: 30px 0;'>", unsafe_allow_html=True)
         else:
-            # Görsel henüz yoksa exceldeki örnek metinlerini göster
-            if not ilgili_ornekler_df.empty:
-                for _, r_orn in ilgili_ornekler_df.iterrows():
-                    o_sirasi = r_orn.get("ornek_no", "Örnek")
-                    cikti_b = r_orn.get("ogrenme_ciktisi", "")
-                    surec_d = r_orn.get("surec_detay", "")
-                    bicimli_c = surec_bilesenlerini_bicimlendir(surec_d)
-                    
-                    st.markdown(f"""
-                    <div class="tymm-cikti-box">
-                        <h5>{o_sirasi} - {cikti_b}</h5>
-                        {bicimli_c}
-                    </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.markdown(f"""
-                <div class="tymm-img-container">
-                    <p style="color: #64748B; font-weight: 600; margin: 30px 0;">
-                        Bu ölçme aracına ait örnek görsel bulunamadı.<br>
-                        Beklenen dosya formatı: <code>assets/images/ornek{arac_id}_1.png / .jpg</code>
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="tymm-img-container">
+                <p style="color: #64748B; font-weight: 600; margin: 30px 0;">
+                    Bu ölçme aracına ait kayıtlı örnek bulunamadı.<br>
+                    Beklenen dosya formatı: <code>assets/images/ornek{arac_id}_1.png / .jpg</code>
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
 
     # ============================================================
     # Sayfa Altı Navigasyon (Footer)
