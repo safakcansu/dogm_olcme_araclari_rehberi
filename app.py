@@ -4,7 +4,9 @@ import os
 import base64
 import re
 
+# ============================================================
 # 1. Sayfa Yapılandırması
+# ============================================================
 st.set_page_config(
     page_title="Ölçme ve Değerlendirme Araçları: Ders Kitabı ve Öğretim Materyali Örnekleri",
     page_icon="📘",
@@ -12,7 +14,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ============================================================
 # 2. Dosya Yolları
+# ============================================================
 GORSEL_KLASORU = os.path.join("assets", "images")
 FON_GORSELI_PNG = os.path.join(GORSEL_KLASORU, "webfon.png")
 FON_GORSELI_JPG = os.path.join(GORSEL_KLASORU, "webfon.jpg")
@@ -43,7 +47,9 @@ def arka_plan_css_olustur(gorsel_yolu):
 
 st.markdown(arka_plan_css_olustur(fon_yolu), unsafe_allow_html=True)
 
+# ============================================================
 # 3. Webfon Uyumlu Kurumsal CSS
+# ============================================================
 TYMM_CSS = """
 <style>
 /* Sol Kenar Çubuğu */
@@ -186,45 +192,6 @@ div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
     display: none !important;
 }
 
-/* Dark Mod Uyumu */
-@media (prefers-color-scheme: dark) {
-    div[data-testid="stButton"] > button {
-        background-color: #0F172A !important;
-        border: 1px solid #334155 !important;
-    }
-    div[data-testid="stButton"] > button * {
-        color: #FFFFFF !important;
-    }
-    div[data-testid="stButton"] > button:hover {
-        background-color: #0891B2 !important;
-        border-color: #0891B2 !important;
-    }
-    div[data-testid="stButton"] > button:hover * {
-        color: #FFFFFF !important;
-    }
-    div[data-testid="stTabs"] [data-baseweb="tab"] {
-        background-color: #0F172A !important;
-        border: 1px solid #334155 !important;
-    }
-    div[data-testid="stTabs"] [data-baseweb="tab"] * {
-        color: #FFFFFF !important;
-    }
-    div[data-testid="stTabs"] [data-baseweb="tab"]:hover {
-        background-color: #0891B2 !important;
-        border-color: #0891B2 !important;
-    }
-    div[data-testid="stTabs"] [data-baseweb="tab"]:hover * {
-        color: #FFFFFF !important;
-    }
-    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
-        background-color: #0891B2 !important;
-        border-color: #0891B2 !important;
-    }
-    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
-        color: #FFFFFF !important;
-    }
-}
-
 /* Expander */
 div[data-testid="stExpander"] {
     background-color: rgba(255, 255, 255, 0.94) !important;
@@ -284,19 +251,6 @@ div[data-testid="stExpander"] details summary span p {
     margin-bottom: 8px;
 }
 
-.tymm-badge-item {
-    background-color: #F0FDFA;
-    border: 1px solid #CCFBF1;
-    padding: 12px 18px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    color: #0F766E;
-    font-size: 1.02rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-}
-
 .tymm-img-container {
     background-color: rgba(255, 255, 255, 0.95);
     border: 1px solid #E2E8F0;
@@ -314,6 +268,7 @@ div[data-testid="stExpander"] details summary span p {
     padding: 24px 26px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     backdrop-filter: blur(8px);
+    margin-bottom: 15px;
 }
 .tymm-cikti-box h5 {
     color: #9A3412;
@@ -322,9 +277,7 @@ div[data-testid="stExpander"] details summary span p {
     font-weight: 800;
 }
 
-/* ============================================================
-   SAĞ ÜSTTE SABİT GEZEN FLOATING BUTON STİLİ
-   ============================================================ */
+/* Floating Buton */
 .floating-back-link {
     text-decoration: none !important;
 }
@@ -362,10 +315,7 @@ div[data-testid="stExpander"] details summary span p {
     color: #FFFFFF !important;
 }
 
-/* ============================================================
-   SAYFA ALTI (FOOTER) ÖNCEKİ / SONRAKİ ARAÇ BUTONLARI (HOVERLI)
-   ============================================================ */
-
+/* Footer Butonları */
 div[data-testid="column"]:has(button[key^="nav_alt_"]) button {
     background-color: #FFFFFF !important;
     border: 1.5px solid #CBD5E1 !important;
@@ -396,42 +346,32 @@ div[data-testid="column"]:has(button[key^="nav_alt_"]) button:hover * {
 """
 st.markdown(TYMM_CSS, unsafe_allow_html=True)
 
+# ============================================================
 # 4. Süreç Bileşenlerini Biçimlendiren Fonksiyon
+# ============================================================
 def surec_bilesenlerini_bicimlendir(metin):
     if not metin or str(metin) == "nan":
-        return "<p style='color: #64748b; font-size: 1rem;'>Bu örnek için Excel'de henüz özel bir öğrenme çıktısı tanımlanmamış.</p>"
+        return "<p style='color: #64748b; font-size: 1rem;'>Bu örnek için özel bir alt süreç bileşeni belirtilmemiştir.</p>"
     
     metin = str(metin).strip()
-    if "*" not in metin:
-        return f"<p style='margin:0; font-size:1.05rem; line-height:1.7; color:#1E293B;'>{metin}</p>"
-    
-    parcalar = [p.strip() for p in metin.split("*") if p.strip()]
-    ana_cikti = parcalar[0]
-    html_cikti = f"<div style='font-size: 1.1rem; font-weight: 750; margin-bottom: 12px; color: #0F172A; line-height: 1.6;'>{ana_cikti}</div>"
-    html_cikti += "<ul style='margin: 0; padding-left: 5px; list-style-type: none;'>"
-    
-    for madde in parcalar[1:]:
-        kapanis = madde.find(")")
-        if kapanis != -1:
-            etiket = madde[:kapanis+1].strip()
-            icerik = madde[kapanis+1:].strip()
+    if "|" in metin:
+        parcalar = [p.strip() for p in metin.split("|") if p.strip()]
+        html_cikti = "<ul style='margin: 0; padding-left: 5px; list-style-type: none;'>"
+        for madde in parcalar:
             html_cikti += f"""
-            <li style='margin-bottom: 10px; color: #334155; font-size: 1rem; line-height: 1.6; display: flex; align-items: flex-start;'>
-                <span style='margin-right: 8px; color: #EA580C; font-weight: 800;'>▪</span>
-                <span><strong style='color: #0F172A;'>{etiket}</strong> {icerik}</span>
-            </li>
-            """
-        else:
-            html_cikti += f"""
-            <li style='margin-bottom: 10px; color: #334155; font-size: 1rem; line-height: 1.6; display: flex; align-items: flex-start;'>
+            <li style='margin-bottom: 8px; color: #334155; font-size: 1rem; line-height: 1.6; display: flex; align-items: flex-start;'>
                 <span style='margin-right: 8px; color: #EA580C; font-weight: 800;'>▪</span>
                 <span>{madde}</span>
             </li>
             """
-    html_cikti += "</ul>"
-    return html_cikti
+        html_cikti += "</ul>"
+        return html_cikti
+    
+    return f"<p style='margin:0; font-size:1.05rem; line-height:1.7; color:#1E293B;'>{metin}</p>"
 
+# ============================================================
 # 5. Görsel Tarayıcı
+# ============================================================
 def tum_ornekleri_bul(arac_id):
     uzantilar = [".png", ".jpg", ".jpeg", ".PNG", ".JPG"]
     bulunan_ornekler = []
@@ -450,33 +390,96 @@ def tum_ornekleri_bul(arac_id):
         ornek_no += 1
     return bulunan_ornekler
 
-# 6. Excel Verilerini Otomatik Değişim Takibiyle Yükleme
+# ============================================================
+# 6. Excel Verilerini Otomatik Yükleme (49 Araç + Beceri + Örnekler)
+# ============================================================
 @st.cache_data
 def verileri_yukle(dosya_yolu, dosya_zamani):
     if not os.path.exists(dosya_yolu):
-        return None, None
+        return None, None, None
     try:
         xls = pd.ExcelFile(dosya_yolu)
-        df_araclar = pd.read_excel(xls, sheet_name=0)
         
+        # 1. Sayfa: Araç Listesi
+        sheet_arac = "Arac_Listesi" if "Arac_Listesi" in xls.sheet_names else xls.sheet_names[1] if len(xls.sheet_names) > 1 else xls.sheet_names[0]
+        df_araclar = pd.read_excel(xls, sheet_name=sheet_arac)
+        
+        # Kolon standartlaştırma
+        df_araclar.columns = [c.strip() for c in df_araclar.columns]
+        rename_dict = {}
+        for c in df_araclar.columns:
+            if "No" in c: rename_dict[c] = "arac_id"
+            elif "Adı" in c or "Adi" in c: rename_dict[c] = "arac_adi"
+            elif "Sayfa" in c: rename_dict[c] = "sayfa_araligi"
+            elif "Tanım" in c or "Tanim" in c: rename_dict[c] = "tanitim"
+            elif "İlke" in c or "Ilke" in c or "Dikkat" in c: rename_dict[c] = "dikkat_edilecekler"
+        df_araclar = df_araclar.rename(columns=rename_dict)
+        df_araclar["arac_id"] = pd.to_numeric(df_araclar["arac_id"], errors="coerce")
+
+        # Kategori ataması (Eğer sütun yoksa ID aralığına göre dinamik belirle)
+        if "kategori" not in df_araclar.columns:
+            def kategori_belirle(row_id):
+                if row_id in [39, 40, 41]:
+                    return "Puanlama Araçları"
+                elif row_id in [42, 43, 44, 45]:
+                    return "Değerlendirme Formları"
+                elif row_id in [46, 47, 48, 49]:
+                    return "Hızlı Değerlendirme Teknikleri"
+                return "Ölçme ve Değerlendirme Araçları"
+            df_araclar["kategori"] = df_araclar["arac_id"].apply(kategori_belirle)
+
+        # 2. Sayfa: Beceri Matrisi
         df_beceriler = None
-        if "beceri_eslesme" in xls.sheet_names:
-            df_beceriler = pd.read_excel(xls, sheet_name="beceri_eslesme")
-        elif len(xls.sheet_names) > 1:
-            df_beceriler = pd.read_excel(xls, sheet_name=1)
+        if "Beceri_Matrisi" in xls.sheet_names:
+            df_beceriler = pd.read_excel(xls, sheet_name="Beceri_Matrisi")
+        elif len(xls.sheet_names) > 2:
+            df_beceriler = pd.read_excel(xls, sheet_name=2)
             
-        return df_araclar, df_beceriler
+        if df_beceriler is not None:
+            df_beceriler.columns = [c.strip() for c in df_beceriler.columns]
+            rename_b = {}
+            for c in df_beceriler.columns:
+                if "No" in c: rename_b[c] = "arac_id"
+                elif "Adı" in c or "Adi" in c: rename_b[c] = "arac_adi"
+                elif "Kodu" in c: rename_b[c] = "beceri_kodu"
+                elif "Önerilen" in c or "Onerilen" in c: rename_b[c] = "onerilen_beceri"
+                elif "Süreç" in c or "Surec" in c: rename_b[c] = "surec_bileseni"
+            df_beceriler = df_beceriler.rename(columns=rename_b)
+            df_beceriler["arac_id"] = pd.to_numeric(df_beceriler["arac_id"], errors="coerce")
+
+        # 3. Sayfa: Örnek Uygulamalar
+        df_ornekler = None
+        if "Ornek_Uygulamalar" in xls.sheet_names:
+            df_ornekler = pd.read_excel(xls, sheet_name="Ornek_Uygulamalar")
+        elif len(xls.sheet_names) > 3:
+            df_ornekler = pd.read_excel(xls, sheet_name=3)
+
+        if df_ornekler is not None:
+            df_ornekler.columns = [c.strip() for c in df_ornekler.columns]
+            rename_o = {}
+            for c in df_ornekler.columns:
+                if "No" in c and "Araç" in c: rename_o[c] = "arac_id"
+                elif "Örnek No" in c or "Ornek No" in c: rename_o[c] = "ornek_no"
+                elif "Öğrenme" in c or "Ogrenme" in c or "Başlığı" in c: rename_o[c] = "ogrenme_ciktisi"
+                elif "Detay" in c or "Notu" in c or "Süreç" in c: rename_o[c] = "surec_detay"
+            df_ornekler = df_ornekler.rename(columns=rename_o)
+            df_ornekler["arac_id"] = pd.to_numeric(df_ornekler["arac_id"], errors="coerce")
+
+        return df_araclar, df_beceriler, df_ornekler
     except Exception as e:
-        return None, None
+        st.error(f"Excel okunurken hata oluştu: {e}")
+        return None, None, None
 
 dosya_zamani = os.path.getmtime(EXCEL_YOLU) if os.path.exists(EXCEL_YOLU) else 0
-df, df_beceriler = verileri_yukle(EXCEL_YOLU, dosya_zamani)
+df, df_beceriler, df_ornekler = verileri_yukle(EXCEL_YOLU, dosya_zamani)
 
 if df is None:
     st.error(f"`{EXCEL_YOLU}` dosyası bulunamadı! Lütfen Excel dosyasını `data` klasörüne ekleyin.")
     st.stop()
 
+# ============================================================
 # 7. Oturum Durumu ve Query Parametre Kontrolü
+# ============================================================
 if "secilen_arac" not in st.session_state:
     st.session_state.secilen_arac = None
 
@@ -488,7 +491,9 @@ if "action" in st.query_params and st.query_params["action"] == "geri":
     st.query_params.clear()
     st.rerun()
 
+# ============================================================
 # 8. Sol Kenar Çubuğu
+# ============================================================
 with st.sidebar:
     if os.path.exists(SOL_PANEL_GORSELI):
         st.markdown(f"""
@@ -530,9 +535,9 @@ with st.sidebar:
         st.session_state.secilen_arac = secim
         st.rerun()
 
-# ----------------------------------------------------
+# ============================================================
 # 9. GÖRÜNÜM 1: ANA SAYFA
-# ----------------------------------------------------
+# ============================================================
 if st.session_state.secilen_arac is None:
     col_banner, col_logo = st.columns([4.2, 1.2], vertical_alignment="center")
     
@@ -576,7 +581,7 @@ if st.session_state.secilen_arac is None:
     # 1.A) BECERİDEN ARACA ULAŞMA MODU
     if st.session_state.aktif_gorunum == "beceriler":
         st.markdown('<div class="tymm-section-title">🎯 Becerilere Göre Ölçme Aracı Önerileri</div>', unsafe_allow_html=True)
-        st.markdown("Öğretim programında yer alan beceri veya süreç bileşenini seçerek, bu çıktıyı ölçmede kullanılabilecek araç önerilerini listeleyebilirsiniz.")
+        st.markdown("Öğretim programında yer alan beceriyi seçerek, bu beceriyi ölçmede kullanılabilecek önerilen araçları listeleyebilirsiniz.")
         
         st.warning("""
         ⚠️ **Önemli Not ve Sınırlılık:**  
@@ -585,38 +590,27 @@ if st.session_state.secilen_arac is None:
         Ölçme aracının seçimi; ilgili öğrenme çıktısının derinliğine, dersin bağlamına, hedef kitleye ve öğretim materyalinin tasarım ilkelerine göre yazarın uzmanlık kararıyla belirlenmelidir.
         """)
         
-        if df_beceriler is None or "beceri_adi" not in df_beceriler.columns:
-            st.info("ℹ️ **Beceri Eşleştirme Modülü Hazırlık Aşamasındadır.**\n\n`araclar.xlsx` dosyanıza `beceri_eslesme` sayfası eklendiğinde önerilen araçlar otomatik olarak bu alanda listelenecektir.")
+        if df_beceriler is None or "onerilen_beceri" not in df_beceriler.columns:
+            st.info("ℹ️ Beceri eşleme verisi bulunamadı.")
         else:
-            beceri_listesi = ["--- Bir Beceri / Süreç Bileşeni Seçiniz ---"] + df_beceriler["beceri_adi"].dropna().tolist()
+            # Filtre için geçerli beceri listesi
+            gecerli_beceri_df = df_beceriler[df_beceriler["beceri_kodu"] != "-"].copy()
+            beceri_listesi = ["--- Bir Beceri / Süreç Bileşeni Seçiniz ---"] + sorted(gecerli_beceri_df["onerilen_beceri"].dropna().unique().tolist())
             secilen_beceri = st.selectbox("İncelemek istediğiniz beceriyi seçiniz:", beceri_listesi)
             
             if secilen_beceri != "--- Bir Beceri / Süreç Bileşeni Seçiniz ---":
-                secilen_satir = df_beceriler[df_beceriler["beceri_adi"] == secilen_beceri].iloc[0]
+                eslesen_satirlar = df_beceriler[df_beceriler["onerilen_beceri"] == secilen_beceri]
+                eslesen_arac_idleri = eslesen_satirlar["arac_id"].dropna().unique().tolist()
+                onerilen_araclar_df = df[df["arac_id"].isin(eslesen_arac_idleri)].sort_values("arac_id")
                 
-                if "aciklama" in secilen_satir and pd.notna(secilen_satir["aciklama"]):
-                    st.markdown(f"""
-                    <div class="tymm-card" style="margin-bottom: 20px;">
-                        <div class="tymm-card-title">Ölçme Yaklaşımı ve Rehber Not</div>
-                        <p>{secilen_satir['aciklama']}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                id_metni = str(secilen_satir.get("uygun_arac_idleri", ""))
-                if id_metni and id_metni != "nan":
-                    id_listesi = [int(s.strip()) for s in re.findall(r'\d+', id_metni)]
-                    onerilen_araclar_df = df[df["arac_id"].isin(id_listesi)]
-                    
-                    st.markdown(f"##### Bu Beceriyi Ölçmek İçin Önerilen Araçlar ({len(onerilen_araclar_df)} Araç)")
-                    cols = st.columns(3)
-                    for idx, (_, row) in enumerate(onerilen_araclar_df.iterrows()):
-                        col_target = cols[idx % 3]
-                        etiket = f"{int(row['arac_id'])}. {row['arac_adi']}"
-                        if col_target.button(etiket, key=f"beceri_btn_{row['arac_id']}", use_container_width=True):
-                            st.session_state.secilen_arac = row["arac_adi"]
-                            st.rerun()
-                else:
-                    st.warning("Bu beceri için henüz eşleştirilmiş araç ID'si girilmemiş.")
+                st.markdown(f"##### Bu Beceriyi Ölçmek İçin Önerilen Araçlar ({len(onerilen_araclar_df)} Araç)")
+                cols = st.columns(3)
+                for idx, (_, row) in enumerate(onerilen_araclar_df.iterrows()):
+                    col_target = cols[idx % 3]
+                    etiket = f"{int(row['arac_id'])}. {row['arac_adi']}"
+                    if col_target.button(etiket, key=f"beceri_btn_{row['arac_id']}", use_container_width=True):
+                        st.session_state.secilen_arac = row["arac_adi"]
+                        st.rerun()
 
     # 1.B) MEVCUT 4 KATEGORİLİ LİSTE MODU
     else:
@@ -629,7 +623,7 @@ if st.session_state.secilen_arac is None:
 
         for kat_baslik, kat_anahtar in kategoriler:
             st.markdown(f'<div class="tymm-section-title">{kat_baslik}</div>', unsafe_allow_html=True)
-            kat_df = df[df["kategori"].astype(str).str.strip() == kat_anahtar] if "kategori" in df.columns else df
+            kat_df = df[df["kategori"].astype(str).str.strip() == kat_anahtar]
             
             cols = st.columns(3)
             for idx, (_, row) in enumerate(kat_df.iterrows()):
@@ -639,9 +633,9 @@ if st.session_state.secilen_arac is None:
                     st.session_state.secilen_arac = row["arac_adi"]
                     st.rerun()
 
-# ----------------------------------------------------
+# ============================================================
 # 10. GÖRÜNÜM 2: DETAY SAYFASI
-# ----------------------------------------------------
+# ============================================================
 else:
     # Tüm araçların sıralı listesini al (ID sırasına göre)
     df_sirali = df.sort_values(by="arac_id").reset_index(drop=True)
@@ -651,7 +645,7 @@ else:
     secilen_arac = df_sirali.iloc[secilen_index]
     arac_id = int(secilen_arac["arac_id"])
 
-    # Önceki ve Sonraki Araç Bilgilerini Belirle (ID + Ad)
+    # Önceki ve Sonraki Araç Bilgilerini Belirle
     onceki_arac_adi = None
     onceki_etiket = None
     if secilen_index > 0:
@@ -678,11 +672,14 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # Üst Başlık (Üstteki kaba butonlar kaldırıldı, temiz ve sade görünüm)
+    # Üst Başlık
     st.markdown(f"""
     <div style="margin-bottom: 20px;">
         <span style="background-color: #CCFBF1; color: #0F766E; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
             {secilen_arac.get('kategori', 'Ölçme Aracı')}
+        </span>
+        <span style="background-color: #E0F2FE; color: #0369A1; font-size: 0.85rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; margin-left: 6px;">
+            Sayfa: {secilen_arac.get('sayfa_araligi', '')}
         </span>
         <h2 style="color: #0F172A; font-size: 1.85rem; font-weight: 800; margin-top: 8px; margin-bottom: 0;">
             {arac_id}. {secilen_arac['arac_adi']}
@@ -692,9 +689,9 @@ else:
 
     # 4 Ana Sekme
     tab1, tab2, tab3, tab4 = st.tabs([
-        "**1. Tanıtım**",
+        "**1. Tanıtım & Kapsam**",
         "**2. Hazırlarken Dikkat Edilecek Hususlar**",
-        "**3. Önerilen Beceriler / Süreç Bileşenleri**",
+        "**3. Önerilen Beceriler (2 Sütun)**",
         "**4. Örnek & Çıktı Eşleşmesi**"
     ])
 
@@ -715,8 +712,10 @@ else:
         if metin and metin != "nan":
             satirlar = [s.strip() for s in metin.split("\n") if s.strip()]
             for satir in satirlar:
-                li_icerik += f"<li>{satir.lstrip('•-* ')}</li>"
-        else:
+                temiz_satir = re.sub(r'^[✓✔•\-\*\s]+', '', satir).strip()
+                if temiz_satir and not temiz_satir.startswith("Sürecinde Dikkat"):
+                    li_icerik += f"<li>{temiz_satir}</li>"
+        if not li_icerik:
             li_icerik = "<li>Belirtilen husus bulunamadı.</li>"
 
         st.markdown(f"""
@@ -728,45 +727,48 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-    # 3. Önerilen Beceriler
+    # 3. Önerilen Beceriler (2 Sütunlu Temiz Tablo)
     with tab3:
-        beceriler = str(secilen_arac.get("onerilen_beceriler", ""))
-        rozetler_html = ""
-        if beceriler and beceriler != "nan":
-            satirlar = [s.strip() for s in beceriler.split("\n") if s.strip()]
-            for satir in satirlar:
-                temiz = satir.lstrip('•-* ')
-                rozetler_html += f'<div class="tymm-badge-item"><span style="color:#0891B2; margin-right:8px; font-weight:800;">✓</span> {temiz}</div>'
+        if df_beceriler is not None:
+            arac_beceri_df = df_beceriler[df_beceriler["arac_id"] == arac_id].copy()
+            if not arac_beceri_df.empty:
+                st.markdown(f"""
+                <div class="tymm-card" style="margin-bottom: 16px;">
+                    <div class="tymm-card-title">Bu Araçla Ölçülmesi Önerilen Beceriler ve Süreç Bileşenleri</div>
+                    <p>Aşağıdaki tabloda bu ölçme aracı ile yoklanması önerilen kavramsal beceriler, dinî alan becerileri ve süreç bileşenleri listelenmiştir.</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                tablo_verisi = arac_beceri_df[["onerilen_beceri", "surec_bileseni"]].copy()
+                tablo_verisi.columns = ["Önerilen Beceri", "Süreç Bileşenleri"]
+                st.dataframe(tablo_verisi, use_container_width=True, hide_index=True)
+            else:
+                st.info("Bu araç için kayıtlı özel bir beceri eşleşmesi bulunmamaktadır.")
         else:
-            rozetler_html = '<div class="tymm-badge-item">Kayıtlı önerilen beceri bulunamadı.</div>'
-
-        st.markdown(f"""
-        <div class="tymm-card">
-            <div class="tymm-card-title">Bu Araçla Ölçülmesi Önerilen Beceriler ve Süreç Bileşenleri</div>
-            {rozetler_html}
-        </div>
-        """, unsafe_allow_html=True)
+            st.warning("Beceri matrisi tablosu yüklenemedi.")
 
     # 4. Örnek Görseller ve Çıktı Eşleşmesi
     with tab4:
         st.write("")
         ornekler_listesi = tum_ornekleri_bul(arac_id)
         
-        if not ornekler_listesi:
-            st.markdown(f"""
-            <div class="tymm-img-container">
-                <p style="color: #64748B; font-weight: 600; margin: 30px 0;">
-                    Bu ölçme aracına ait örnek görsel bulunamadı.<br>
-                    Beklenen dosya formatı: <code>assets/images/ornek{arac_id}_1.png / .jpg</code>
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
+        # Bu araca ait exceldeki örnekler
+        ilgili_ornekler_df = pd.DataFrame()
+        if df_ornekler is not None:
+            ilgili_ornekler_df = df_ornekler[df_ornekler["arac_id"] == arac_id].copy()
+        
+        # Görsel varsa görsellerle birlikte göster
+        if ornekler_listesi:
             for o_no, gorsel_yolu_bulunan, dosya_adi in ornekler_listesi:
-                cikti_sutun_adi = f"ornek{o_no}_cikti"
-                cikti_degeri = secilen_arac.get(cikti_sutun_adi) if cikti_sutun_adi in secilen_arac else None
-                
-                bicimli_cikti = surec_bilesenlerini_bicimlendir(cikti_degeri)
+                # Eşleşen öğrenme çıktısını bul
+                cikti_metni = ""
+                surec_metni = ""
+                if not ilgili_ornekler_df.empty and len(ilgili_ornekler_df) >= o_no:
+                    satir_ornek = ilgili_ornekler_df.iloc[o_no - 1]
+                    cikti_metni = satir_ornek.get("ogrenme_ciktisi", "")
+                    surec_metni = satir_ornek.get("surec_detay", "")
+
+                bicimli_cikti = surec_bilesenlerini_bicimlendir(surec_metni)
                 
                 st.markdown(f"<h4 style='color:#0F172A; font-weight:800; margin-top:20px;'>Örnek {arac_id}.{o_no}</h4>", unsafe_allow_html=True)
                 col_img, col_info = st.columns([3, 2], gap="large")
@@ -780,14 +782,39 @@ else:
                     st.markdown(f"""
                     <div class="tymm-cikti-box">
                         <h5>Örneğe Ait Öğrenme Çıktısı / Süreç Bileşeni</h5>
+                        <p style="font-weight:700; color:#0F172A; margin-bottom:8px;">{cikti_metni}</p>
                         {bicimli_cikti}
                     </div>
                     """, unsafe_allow_html=True)
                 
                 st.markdown("<hr style='border: 0; border-top: 1px solid #E2E8F0; margin: 30px 0;'>", unsafe_allow_html=True)
+        else:
+            # Görsel henüz yoksa exceldeki örnek metinlerini göster
+            if not ilgili_ornekler_df.empty:
+                for _, r_orn in ilgili_ornekler_df.iterrows():
+                    o_sirasi = r_orn.get("ornek_no", "Örnek")
+                    cikti_b = r_orn.get("ogrenme_ciktisi", "")
+                    surec_d = r_orn.get("surec_detay", "")
+                    bicimli_c = surec_bilesenlerini_bicimlendir(surec_d)
+                    
+                    st.markdown(f"""
+                    <div class="tymm-cikti-box">
+                        <h5>{o_sirasi} - {cikti_b}</h5>
+                        {bicimli_c}
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div class="tymm-img-container">
+                    <p style="color: #64748B; font-weight: 600; margin: 30px 0;">
+                        Bu ölçme aracına ait örnek görsel bulunamadı.<br>
+                        Beklenen dosya formatı: <code>assets/images/ornek{arac_id}_1.png / .jpg</code>
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
 
     # ============================================================
-    # SAYFA ALTI YÖNLENDİRİCİ FOOTER NAVİGASYONU (HOVERLI & ŞIK)
+    # Sayfa Altı Navigasyon (Footer)
     # ============================================================
     st.markdown('<div class="footer-nav-container">', unsafe_allow_html=True)
     st.write("")
