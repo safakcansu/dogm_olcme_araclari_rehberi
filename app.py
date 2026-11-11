@@ -611,7 +611,7 @@ if st.session_state.secilen_arac is None:
 
     # 1.A) BECERİDEN ARACA ULAŞMA MODU
     # --------------------------------------------------------------------------
-    # 1.A) BECERİDEN ARACA ULAŞMA MODU (Süreç Süreç Görünüm)
+    # 1.A) BECERİDEN ARACA ULAŞMA MODU (Kök DAB Filtreli & Süreç Süreç Görünüm)
     # --------------------------------------------------------------------------
     if st.session_state.aktif_gorunum == "beceriler":
         st.markdown('<div class="tymm-section-title">🎯 Becerilere Göre Ölçme Aracı Önerileri</div>', unsafe_allow_html=True)
@@ -627,16 +627,29 @@ if st.session_state.secilen_arac is None:
         if df_beceriler is None or "onerilen_beceri" not in df_beceriler.columns:
             st.info("ℹ️ Beceri eşleme verisi bulunamadı.")
         else:
-            # 1. Becerileri benzersiz listele (Kod ve Adına göre)
+            # 1. Geçerli becerileri filtrele
             gecerli_beceri_df = df_beceriler[df_beceriler["beceri_kodu"] != "-"].copy()
-            beceri_listesi = ["--- Bir Beceri Seçiniz ---"] + sorted(gecerli_beceri_df["onerilen_beceri"].dropna().unique().tolist())
+            
+            # Kök DAB kodlarını (DAB1, DAB2, DAB3, DAB4, DAB6, DAB7, DAB8) tek başına seçilmekten hariç tut:
+            # DAB1.1, DAB1.2, DAB2.1 kalır; doğrudan "DAB1", "DAB2." vb. olanlar elenir.
+            yasakli_dab_kokleri = ["DAB1", "DAB2", "DAB3", "DAB4", "DAB6", "DAB7", "DAB8"]
+            
+            def kok_dab_mi(beceri_str):
+                # Kod DAB ile başlıyorsa ve noktadan sonra rakam gelmiyorsa (örn: DAB1. Temel... -> True, DAB1.1. Kur'an... -> False)
+                return any(re.match(rf'^{kok}\b(?!\.\d)', str(beceri_str).strip()) for kok in yasakli_dab_kokleri)
+            
+            # Filtreleme uygulama
+            filtrelenmis_beceriler = [
+                b for b in gecerli_beceri_df["onerilen_beceri"].dropna().unique()
+                if not kok_dab_mi(b)
+            ]
+            
+            beceri_listesi = ["--- Bir Beceri Seçiniz ---"] + sorted(filtrelenmis_beceriler)
             secilen_beceri = st.selectbox("İncelemek istediğiniz beceriyi seçiniz:", beceri_listesi)
             
             if secilen_beceri != "--- Bir Beceri Seçiniz ---":
                 # Seçilen beceriye ait tüm kayıtları filtrele
                 eslesen_beceri_df = df_beceriler[df_beceriler["onerilen_beceri"] == secilen_beceri].copy()
-                
-                # Bu beceriyle ilişkili toplam benzersiz araç sayısı
                 toplam_arac_sayisi = eslesen_beceri_df["arac_id"].nunique()
                 
                 st.markdown(f"""
@@ -650,10 +663,9 @@ if st.session_state.secilen_arac is None:
                 """, unsafe_allow_html=True)
                 
                 # 2. Süreç Bileşenlerine Göre Gruplama
-                # 'Tüm süreç bileşenleri' olanları en üste alacak şekilde sırala
                 surec_gruplari = eslesen_beceri_df.groupby("surec_bileseni")
                 
-                # Süreçleri düzenli listelemek için sıralı anahtarlar
+                # 'Tüm süreç bileşenleri' varsa en başa al, gerisini sırala
                 sorted_surecler = sorted(
                     surec_gruplari.groups.keys(),
                     key=lambda x: (0 if "Tüm süreç" in str(x) else 1, str(x))
@@ -661,10 +673,8 @@ if st.session_state.secilen_arac is None:
                 
                 for surec in sorted_surecler:
                     grup_df = surec_gruplari.get_group(surec)
-                    # O süreç bileşenine ait araçları tekilleştir
                     arac_alt_listesi = grup_df[["arac_id", "arac_adi"]].drop_duplicates().sort_values("arac_id")
                     
-                    # Süreç Kartı Başlığı
                     if "Tüm süreç" in str(surec):
                         surec_baslik = "⭐ Becerinin Tamamı (Tüm Süreç Bileşenleri İçin Önerilen Araçlar)"
                         rozet_renk = "#0369A1"
@@ -685,14 +695,13 @@ if st.session_state.secilen_arac is None:
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # Bu süreç bileşeni için önerilen araçların butonları (3 sütun)
+                    # Önerilen araçların butonları
                     cols = st.columns(3)
                     for idx, (_, row) in enumerate(arac_alt_listesi.iterrows()):
                         col_target = cols[idx % 3]
                         arac_no = int(row['arac_id'])
                         etiket = f"{arac_no}. {row['arac_adi']}"
                         
-                        # Butona tıklandığında doğrudan o aracın detay sayfasına git
                         if col_target.button(etiket, key=f"btn_sb_{arac_no}_{hash(surec)}_{idx}", use_container_width=True):
                             st.session_state.secilen_arac = row["arac_adi"]
                             st.rerun()
